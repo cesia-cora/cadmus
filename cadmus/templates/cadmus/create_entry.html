@@ -1,0 +1,43 @@
+{% extends "cadmus/layout.html" %}
+{% load static %}
+
+{% block title %}
+    Create entry | Cadmus - Personal Diary
+{% endblock %}
+
+{% block body %}
+
+{% if request.user.is_authenticated %}
+
+<div class="title is-4 has-text-centered is-uppercase">Create an entry</div>
+
+<div class="container-create">
+<form action="" method="POST">
+    {% csrf_token %}
+    <label class="label is-size-5">Title:</label>
+    <p class="is-size-6">Maximum length of 200 characters.</p>
+    {{ entry_form.title }}
+    <label class="label is-size-5">Slug:</label>
+    <p class="is-size-6">Maximum length of 200 characters. This will be your entry URL.</p>
+    {{ entry_form.slug }}
+    <label class="label is-size-5">Content:</label>
+    <p class="is-size-6">No length limits.</p>
+    {{ entry_form.content }}
+    <div style="margin-left:30%;">{{ entry_form.media }}</div>
+    <input type="submit" class="button is-warning" value="Post entry">
+</form>
+<img src="{% static 'cadmus/casual-life-3d-girl-meditating.png' %}" width="250">
+</div>
+<p class="is-size-6 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
+
+{% else %}
+
+<div class="box is-size-4" id="box-404">
+    Uh oh! We don't think you're supposed to see this content...
+    <br>Register or log in to start creating and viewing your entries!
+  </div>
+
+  <img src="{% static 'cadmus/casual-life-3d-v-sign.png' %}" width="250" id="img-404">
+  <p class="is-size-6">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
+{% endif %}
+{% endblock %}

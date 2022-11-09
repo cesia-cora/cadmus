@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Crimson+Text&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400&display=swap');
+@import "bulma.min.css";
+
+body, html {
+	margin: 0;
+}
+
+html {
+	background: rgb(207, 203, 194);
+	background-repeat: repeat;
+	background-attachment: fixed;
+	background-size: 500px;
+	margin: 0 30px;
+}
+
+body {
+	background-color: whitesmoke;
+	font-family: 'Nunito', sans-serif;
+	font-size: 20px;
+	overflow: auto;
+}
+
+.main {
+	min-height: 100vh;
+}
+
+#footer {
+	background-color: whitesmoke;
+	text-align: center;
+	height: 100%;
+	border-top: 1px solid black;
+}
+
+.navbar {
+	margin: 10px 30px;
+	background: whitesmoke;
+	border: 1px solid black;
+}
+
+.title {
+	margin-top: 2%;
+}
+
+.card {
+	background: whitesmoke;
+	border: 1px solid black;
+	height: inherit;
+	border-radius: calc(.25rem - 1px) calc(.25rem - 1px) 0 0;
+	border-color: #6c757d;
+	margin: 10px;
+}
+
+.card-2 {
+	width: 80%;
+	margin: 0 0 20px 10%;
+}
+
+.card-footer {
+	display: flex;
+	justify-content: center;
+	gap: 10px;
+	align-items: baseline;
+}
+
+.card-footer-item:not(:last-child) {
+	border-right: none;
+}
+
+.cards {
+	display: block;
+	margin: 10px 30px;
+}
+
+.container-create {
+	display: flex;
+	flex-direction: row;
+	justify-content: flex-start;
+	align-items: center;
+	margin: 0 0 4% 4%;
+	gap: 15px;
+}
+
+.textarea {
+	width: 20px;
+	margin: 2% 0 2% 0;
+}
+
+.content {
+	font-family: 'Crimson Text', serif;
+}
+
+.pagination, .navbar, footer {
+	font-family: 'Nunito', sans-serif;
+}
+
+.pagination, #img-404 {
+	display: block;
+  	margin-left: auto;
+  	margin-right: auto;
+}
+
+#box-404 {
+	background-color: whitesmoke;
+	margin-left: 32%;
+	width: 40%;
+	margin-top: 2%;
+	border: 1px solid black;
+}
+
+#submit-btn {
+	display: flex;
+	justify-content: center;
+	margin-bottom: 2%;
+}
+
+#container-message {
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: 10px;
+	justify-content: center;
+	margin-bottom: 5%;
+}
+
+#center-position {
+	display: block;
+  	margin-left: auto;
+  	margin-right: auto;
+}
+
+#features {
+	background: whitesmoke;
+	margin-top: 2%;
+	width: 350px;
+	padding: 40px;
+	border: 1px solid black;
+}
+
+#features > ul > li {
+	list-style-type: disc;
+}
+
+.authentication {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+	align-items: center;
+	margin: 0 0 2% 10%;
+	gap: 100px;
+}
+
+#btn-register {
+	margin-top: 5%;
+}
+
+.form-switch {
+	margin-top: 12%;
+}
+
+#submit-form {
+	background-color: #212529;
+	border: 1px solid #ced4da;
+	color: #ffff;
+}
+
+#submit-form:hover {
+	background-color: #f8f9fa;
+	color: #212529;
+	transition: all 0.5s ease;
+}
+
+.last-modified {
+	border-bottom: 1px solid #f14668;
+}
+
+.title-template {
+	display: block;
+	border-bottom: 1px solid whitesmoke;
+	padding: 10px;
+}
+
+.message {
+	width: 30%;
+	margin-left: 35%;
+}
+
+@media (prefers-color-scheme: dark) {
+
+	html {
+		background-color: rgb(27, 25, 25);
+	}
+
+	body {
+		background-color: rgb(46, 44, 44);
+		color: whitesmoke;
+		border: 1px solid black;
+	}
+
+	a {
+		color: lightsteelblue;
+	}
+
+	a:hover {
+		color: rosybrown;
+	}
+
+	hr {
+		background-color: rgb(86, 86, 86);
+	}
+
+	#footer {
+		background-color: rgb(46, 44, 44);;
+		border-top: 1px solid black;
+		color: whitesmoke;
+	}
+
+	.navbar {
+		background: rgb(46, 44, 44);;
+		color: whitesmoke;
+		border: 1px solid rgb(86, 86, 86);
+	}
+
+	a.navbar-item, .navbar-item {
+		color: lightsteelblue;
+	}
+
+	a.navbar-item:hover {
+		background-color: rgba(22, 22, 22, 0);
+		color: rosybrown;
+	}
+
+	.title-template {
+		border-bottom: 1px solid rgb(86, 86, 86)
+	}
+
+	#features, strong {
+		background: rgb(46, 44, 44);;
+		color: whitesmoke;
+	}
+
+	.label {
+		color: whitesmoke;
+		margin-top: 2%;
+	}
+
+	.card, .title {
+		background-color: rgb(46, 44, 44);;
+		color: rgb(179, 179, 179);
+	}
+
+	.card-footer {
+		border: none;
+	}
+}

@@ -1,0 +1,41 @@
+{% extends 'cadmus/layout.html' %}
+{% load static %}
+
+{% block title %}
+    Register | Cadmus - Personal Diary
+{% endblock %}
+
+{% block body %}
+
+{% if message %}
+<article class="message is-warning">
+    <div class="message-header">
+      <p>Warning</p>
+      <button class="delete" onclick="closeBtn()" aria-label="delete"></button>
+    </div>
+    <div class="message-body">
+      {{ message }}
+    </div>
+  </article>
+{% endif %}
+
+<div class="has-text-centered is-size-3">Register</div>
+<br>
+<div class="authentication">
+<form action="{% url 'register' %}" method="POST">
+    {% csrf_token %}
+    <label class="label has-text-centered is-size-5">Username:</label>
+    <input class="input is-normal" type="text" name="username" placeholder="Username">
+    <label class="label has-text-centered is-size-5">Email:</label>
+    <input class="input is-normal" type="email" name="email" placeholder="Email">
+    <label class="label has-text-centered is-size-5">Password:</label>
+    <input class="input is-normal" type="password" name="password" placeholder="Password">
+    <label class="label has-text-centered is-size-5">Confirm password:</label>
+    <input class="input is-normal" type="password" name="confirmation" placeholder="Password">
+    <button class="button is-danger" type="submit" id="btn-register">Register</button>
+</form>
+<img src="{% static 'cadmus/casual-life-3d-girl-with-coffee.png' %}" width="300">
+</div>
+
+<p class="is-size-6 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
+{% endblock %}

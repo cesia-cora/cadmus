@@ -1,0 +1,92 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+		<meta charset="UTF-8">
+		<title>{% block title %}Cadmus - Personal Diary{% endblock %}</title>
+		<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">-->
+		<link href="{% static 'cadmus/styles.css' %}" rel="stylesheet">
+
+		<link rel="shortcut icon" type="image/png" href="{% static 'cadmus/journal-96.png' %}"/>
+
+		<link rel="preconnect" href="https://fonts.googleapis.com">
+		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+	</head>
+
+	<body>
+		<div class="container-flex">
+		<nav class="navbar" role="navigation" aria-label="main navigation">
+			<div class="navbar-brand">
+				<picture>
+					<source srcset="{% static 'cadmus/cafe-night.png' %}" media="(prefers-color-scheme: dark)">
+					<img src="{% static 'cadmus/cafe-96.png' %}" width="60" height="60">
+				</picture>
+			</div>
+		  
+			<div id="navbarBasicExample" class="navbar-menu">
+				<div class="navbar-start">
+					<a class="navbar-item" href="{% url 'index' %}">
+						Home
+					</a>
+				{% if request.user.is_authenticated %}
+					<a class="navbar-item" href="{% url 'create' %}">
+						Add Entry
+					</a>
+
+				{% else %}
+				<!--Nothing at all!-->
+				{% endif %}
+				</div>
+
+				{% if request.user.is_authenticated %}
+				<div class="navbar-end">
+					<p class="navbar-item">{{ request.user }}</p>
+					<div class="navbar-item">
+						<div class="buttons">
+							<a class="button is-link is-size-5" href="{% url 'logout' %}">
+								Log out
+							</a>
+						</div>
+					</div>
+				</div>
+				{% else %}
+				<div class="navbar-end">
+					<div class="navbar-item">
+						<div class="buttons">
+							<a class="button is-danger is-size-5" href="{% url 'register' %}">
+								Sign up
+							</a>
+							<a class="button is-link is-size-5" href="{% url 'login' %}">
+								Log in
+							</a>
+						</div>
+					</div>
+				</div>
+			</div>
+			{% endif %}
+		  </nav>
+
+		{% block body %}
+
+		{% endblock %}
+
+		<footer class="footer" id="footer">
+			<div class="has-text-centered">
+				Copyright © 2022 by Cadmus
+				<br>
+				<picture>
+					<source srcset="{% static 'cadmus/github-night.png' %}" media="(prefers-color-scheme: dark)">
+					<img class="mt-2" src="{% static 'cadmus/github-icon.png' %}"> <a href="https://www.github.com/cesia-cora" target="_blank">Github</a>
+				</picture>
+				<picture>
+					<source srcset="{% static 'cadmus/linkedin-night.png' %}" media="(prefers-color-scheme: dark)">
+					<img src="{% static 'cadmus/linkedin-icon.png' %}"> <a href="https://www.linkedin.com/in/cesia-cora" target="_blank">LinkedIn</a>
+				</picture>
+			</div>
+		  </footer>
+	<script src="{% static 'cadmus/index.js' %}"></script>
+	</body>
+
+</html>

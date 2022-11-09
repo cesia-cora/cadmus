@@ -1,0 +1,67 @@
+{% extends 'cadmus/layout.html' %}
+{% load static %}
+
+{% block body %}
+
+{% if request.user.is_authenticated %}
+
+<div class="title is-4 has-text-centered is-uppercase">All entries for {{ month|date:'F' }}</div>
+
+<ul>
+  <div class="cards">
+    {% for entry in entry_list %}
+        <div class="card mt-4">
+    <div class="card-image">
+    </div>
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+        </div>
+        <div class="media-content">
+          <p class="title is-4">{{ entry.title }}</p>
+        </div>
+      </div>
+  
+      <div class="content">
+        {{ entry.content|safe|linebreaks|truncatechars_html:800 }}
+        <a href="{% url 'entry' entry.slug %}" class="card-footer-item">Keep reading</a>
+        <hr>
+        <span>{{ entry.initial_time|date:'D j' }} <a href="{{ entry.initial_time|date:'m' }}">{{ entry.initial_time|date:'F,' }}</a></span>
+          <span><a href="{% url 'archive_year' entry.initial_time|date:'Y' %}">{{ entry.initial_time|date:'Y' }}</a></span>
+          <span>{{ entry.initial_time|date:'| h:i a' }}</span>
+          {% if entry.initial_time|date:'h:i a' != entry.last_modified|date:'h:i a' %}
+          <br><span class="last-modified">Last modified:</span> <span>{{ entry.last_modified|date:'D j ' }}<a href="{{ entry.last_modified|date:'m' }}">{{ entry.last_modified|date:'F,' }}</a></span>
+          <span><a href="{% url 'archive_year' entry.last_modified|date:'Y' %}">{{ entry.last_modified|date:'Y' }}</a></span>
+          <span>{{ entry.last_modified|date:'| h:i a'}}</span>
+          {% else %}
+          <!--Nothing at all-->
+          {% endif %}
+      </div>
+    </div>
+  </div>
+    {% endfor %}
+</div>
+</ul>
+
+<p>
+    {% if previous_month %}
+        Previous Month: {{ previous_month|date:"F Y" }}
+    {% endif %}
+    {% if next_month %}
+        Next Month: {{ next_month|date:"F Y" }}
+    {% endif %}
+</p>
+
+{% else %}
+
+<div class="box is-size-4" id="box-404">
+  Uh oh! We don't think you're supposed to see this content...
+  <br>Register or log in to start creating and viewing your entries!
+</div>
+
+<img src="{% static 'cadmus/casual-life-3d-v-sign.png' %}" width="250" id="img-404">
+<p class="is-size-6">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
+
+{% endif %}
+
+{% endblock body %}

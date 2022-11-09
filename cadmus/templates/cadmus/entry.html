@@ -1,0 +1,56 @@
+{% extends 'cadmus/layout.html' %}
+{% load static %}
+
+{% block body %}
+
+{% if request.user.is_authenticated and entry.creator == request.user %}
+<div class="main">
+<article class="message is-warning">
+  <div class="message-header">
+    <p>Warning</p>
+    <button class="delete" onclick="closeBtn()" aria-label="delete"></button>
+  </div>
+  <div class="message-body">
+    Deleted or edited entries cannot be recovered.
+  </div>
+</article>
+
+<div class="card mt-4 card-2">
+    <div class="card-image">
+    </div>
+    <div class="card-content">
+      <div class="media">
+        <div class="media-left">
+        </div>
+        <div class="media-content">
+          <p class="title is-4">{{ entry.title }}</p>
+        </div>
+      </div>
+  
+      <div class="content">
+        {{ entry.content|safe|linebreaks }}
+        <br>
+          <footer class="card-footer">
+            <a class="button is-link is-light" href="{% url 'edit' entry.slug %}">Edit</a>
+            <a class="button is-link is-light" href="{% url 'delete' entry.slug %}" type="submit">Delete</a>
+          </footer>
+        <hr>
+        <span>{{ entry.initial_time|date:'D j' }} <a href="{{ entry.initial_time|date:'Y/m' }}">{{ entry.initial_time|date:'F,' }}</a></span>
+        <span><a href="{{ entry.initial_time|date:'Y' }}">{{ entry.initial_time|date:'Y' }}</a></span>
+        <span>{{ entry.initial_time|date:'h:i a' }}
+      </div>
+    </div>
+  </div>
+
+{% else %}
+
+<div class="box is-size-4" id="box-404">
+  Uh oh! We don't think you're supposed to see this content...
+  <br>Register or log in to start creating and viewing your entries!
+</div>
+
+<img src="{% static 'cadmus/casual-life-3d-v-sign.png' %}" width="250" id="img-404">
+
+{% endif %}
+</div>
+{% endblock %}
