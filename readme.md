@@ -1,8 +1,6 @@
 ## CADMUS | PERSONAL DIARY PROJECT
 Cadmus is a web app made to post and see your entries, as an personal diary/journal.
 
-![Screenshot](capture1.png)
-
 ### Features:
 - User creation
 - Post, view, edit and delete entries
