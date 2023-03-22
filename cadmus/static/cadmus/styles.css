@@ -188,13 +188,12 @@ body {
 @media (prefers-color-scheme: dark) {
 
 	html {
-		background-color: rgb(27, 25, 25);
+		background-color: rgb(29, 21, 21);
 	}
 
 	body {
-		background-color: rgb(46, 44, 44);
+		background-color: rgb(36, 32, 32);
 		color: whitesmoke;
-		border: 1px solid black;
 	}
 
 	a {
@@ -210,15 +209,15 @@ body {
 	}
 
 	#footer {
-		background-color: rgb(46, 44, 44);;
+		background-color: rgb(44, 38, 38);;
 		border-top: 1px solid black;
 		color: whitesmoke;
 	}
 
 	.navbar {
-		background: rgb(46, 44, 44);;
+		background: rgb(48, 42, 42);;
 		color: whitesmoke;
-		border: 1px solid rgb(86, 86, 86);
+		border: 1px solid rgb(86, 79, 79);
 	}
 
 	a.navbar-item, .navbar-item {

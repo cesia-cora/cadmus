@@ -1,8 +1,10 @@
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from . import views
-from .models import Entry
+from .models import *
 from .views import EntryMonthArchiveView, EntryYearArchiveView
+
+app_name = 'cadmus'
 
 urlpatterns = [
     path('', views.index, name='index'),

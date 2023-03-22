@@ -34,17 +34,17 @@ def index(request):
 		"page_obj": page_obj
 	})
 
-def all_entries(request):
+# def all_entries(request):
 
-	entries = Entry.objects.all()
-	paginator = Paginator(entries, 12)
+# 	entries = Entry.objects.all()
+# 	paginator = Paginator(entries, 12)
 
-	page_number = request.GET.get('page')
-	page_obj = paginator.get_page(page_number)
+# 	page_number = request.GET.get('page')
+# 	page_obj = paginator.get_page(page_number)
 
-	return render(request, "cadmus/all_entries.html", {
-		"page_obj": page_obj,
-	})
+# 	return render(request, "cadmus/all_entries.html", {
+# 		"page_obj": page_obj,
+# 	})
 
 
 def login_view(request):
@@ -56,7 +56,7 @@ def login_view(request):
 
 		if user is not None:
 			login(request, user)
-			return HttpResponseRedirect(reverse("index"))
+			return HttpResponseRedirect(reverse("cadmus:index"))
 
 		else:
 			return render(request, "cadmus/login.html", {
@@ -69,7 +69,7 @@ def login_view(request):
 
 def logout_view(request):
 	logout(request)
-	return HttpResponseRedirect(reverse("index"))
+	return HttpResponseRedirect(reverse("cadmus:index"))
 
 def register(request):
 
@@ -95,7 +95,7 @@ def register(request):
 			})
 
 		login(request, user)
-		return HttpResponseRedirect(reverse("index"))
+		return HttpResponseRedirect(reverse("cadmus:index"))
 
 	else:
 		return render(request, "cadmus/register.html")
@@ -112,7 +112,7 @@ def create_entry(request):
 			new_entry.creator = request.user
 			new_entry.save()
 
-		return HttpResponseRedirect(reverse("index"))
+		return HttpResponseRedirect(reverse("cadmus:index"))
 
 	else:
 		return render(request, "cadmus/create_entry.html", {
@@ -140,7 +140,7 @@ def edit_entry(request, slug):
 			update_entry = form.save(commit=False)
 			update_entry.save()
 
-			return HttpResponseRedirect(reverse("index"))
+			return HttpResponseRedirect(reverse("cadmus:index"))
 
 	return render(request, "cadmus/update_entry.html", {
 		"entry": entry,
@@ -151,7 +151,7 @@ def delete_entry(request, slug):
 
 	Entry.objects.get(slug=slug).delete()
 
-	return HttpResponseRedirect(reverse("index"))
+	return HttpResponseRedirect(reverse("cadmus:index"))
 
 def archive_month(request):
 

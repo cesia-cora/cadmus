@@ -13,7 +13,7 @@ class Entry(models.Model):
 	content = RichTextField(null=True)
 	initial_time = models.DateTimeField(default=timezone.now, blank=True, null=False, verbose_name="")
 	last_modified = models.DateTimeField(auto_now=True, null=True)
-	creator = models.ForeignKey(User, on_delete=models.CASCADE)
+	creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
 	def __str__(self):
 		return f"{self.title}"

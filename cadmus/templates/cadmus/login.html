@@ -22,7 +22,7 @@
 <div class="has-text-centered is-size-3">Log in</div>
 <br>
 <div class="authentication">
-<form action="{% url 'login' %}" method="POST">
+<form action="{% url 'cadmus:login' %}" method="POST">
     {% csrf_token %}
     <label class="label has-text-centered is-size-5">Username:</label>
     <input class="input is-normal" type="text" name="username" placeholder="Username">
@@ -32,5 +32,5 @@
 </form>
 <img src="{% static 'cadmus/casual-life-3d-girl-with-coffee.png' %}" width="300">
 </div>
-<p class="is-size-6 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
+<p class="is-size-7 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
 {% endblock %}
