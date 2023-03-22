@@ -1,8 +1,6 @@
 ## CADMUS | PERSONAL DIARY PROJECT
 Cadmus is a web app made to post and see your entries, as an personal diary/journal.
 
-![Screenshot](capture1.png)
-
 ### Features:
 - User creation
 - Post, view, edit and delete entries
@@ -11,7 +9,7 @@ Cadmus is a web app made to post and see your entries, as an personal diary/jour
 - Cute 3D images from [Ouch!][def3]
 
 ### Why "Cadmus"?
-Cadmus is the greek god literature and writing.
+Cadmus is the greek god of literature and writing.
 
 ### Installation and usage:
 `pip install -r requirements.txt`
@@ -23,7 +21,8 @@ Cadmus is the greek god literature and writing.
 ### Create admin user:
 `py manage.py createsuperuser`
 
-If you use Linux or Mac you should type <em>python</em> instead of <em>py</em>
+### Run tests:
+`py manage.py test cadmus`
 
 ### Components:
 - Built with Python framework [Django][def]
