@@ -36,11 +36,3 @@ class TestUrls(SimpleTestCase):
     def test_delete_url_is_resolved(self):
         url = reverse('cadmus:delete', args=['slug'])
         self.assertEquals(resolve(url).func, delete_entry)
-
-    # def test_archive_year_url_is_resolved(self):
-    #     url = reverse('cadmus:archive_year', args=[2022])
-    #     self.assertEquals(resolve(url).func.view_class, EntryYearArchiveView)
-
-    # def test_archive_month_url_is_resolved(self):
-    #     url = reverse('cadmus:archive_month', args=['<int:month>/<int:year>'])
-    #     self.assertEquals(resolve(url).func.view_class, EntryMonthArchiveView)

@@ -2,12 +2,13 @@ from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
 from . import views
 from .models import *
-from .views import EntryMonthArchiveView, EntryYearArchiveView
+from .views import EntryMonthArchiveView, EntryYearArchiveView, SearchResultsView
 
 app_name = 'cadmus'
 
 urlpatterns = [
     path('', views.index, name='index'),
+    path('search', SearchResultsView.as_view(), name='search_results'),
     path('create/', views.create_entry, name="create"),
     path('entry/<slug:slug>', views.entry, name='entry'),
     path('register', views.register, name="register"),

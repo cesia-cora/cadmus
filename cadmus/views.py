@@ -2,6 +2,8 @@ from cmath import log
 from django.shortcuts import render
 from django.http import HttpResponseRedirect
 from django.views.generic.dates import MonthArchiveView, YearArchiveView
+from django.views.generic import ListView
+from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.urls import reverse
@@ -21,6 +23,17 @@ class EntryYearArchiveView(YearArchiveView):
     date_field = "initial_time"
     make_object_list = True
     allow_future = True
+    
+class SearchResultsView(ListView):
+	model = Entry
+	template_name = 'cadmus/search_results.html'
+	
+	def get_queryset(self):
+		query = self.request.GET.get("q")
+		object_list = Entry.objects.filter(
+				Q(title__icontains=query) | Q(content__icontains=query)
+			)
+		return object_list
 
 def index(request):
 	# add [:number] to limit entries

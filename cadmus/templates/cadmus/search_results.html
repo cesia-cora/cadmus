@@ -1,0 +1,46 @@
+{% extends 'cadmus/layout.html' %}
+{% load static %}
+
+{% block body %}
+
+<div class="main">
+
+    <div class="title is-4 has-text-centered title-template is-uppercase">Search results</div>
+
+    <div class="cards">
+        {% for entry in object_list %}
+        {% if entry.creator == request.user %}
+        <div class="card">
+            <div class="card-image"></div>
+            <div class="card-content">
+                <div class="media">
+                    <div class="media-left"></div>
+                    <div class="media-content">
+                        <p class="title is-4">{{ entry.title }}</p>
+                    </div>
+                </div>
+
+                <div class="content">
+                    {{ entry.content|safe|linebreaks|truncatechars_html:200 }}
+                    <a href="{% url 'cadmus:entry' entry.slug %}" class="card-footer-item">Keep reading</a>
+                    <hr>
+                    <span>{{ entry.initial_time|date:'D j' }} <a href="{{ entry.initial_time|date:'Y/m' }}">{{ entry.initial_time|date:'F,' }}</a></span>
+                    <span><a href="{{ entry.initial_time|date:'Y' }}">{{ entry.initial_time|date:'Y' }}</a></span>
+                    <span>{{ entry.initial_time|date:'| h:i a' }}</span>
+                    {% if entry.initial_time|date:'h:i a' != entry.last_modified|date:'h:i a' %}
+                    <br><span class="last-modified">Last modified:</span> <span>{{ entry.last_modified|date:'D j ' }}<a
+                            href="{{ entry.last_modified|date:'Y/m' }}">{{ entry.last_modified|date:'F,' }}</a></span>
+                    <span><a href="{{ entry.last_modified|date:'Y' }}">{{ entry.last_modified|date:'Y' }}</a></span>
+                    <span>{{ entry.last_modified|date:'| h:i a'}}</span>
+                    {% else %}
+                    <br><span><i>Not modified yet</i></span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endif %}
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}

@@ -5,7 +5,7 @@
 
 {% if request.user.is_authenticated %}
 
-<div class="title is-4 has-text-centered is-uppercase">All entries for {{ month|date:'F' }}</div>
+<div class="title is-4 has-text-centered title-template is-uppercase">All entries from {{ month|date:'F' }}</div>
 
 <ul>
   <div class="cards">
@@ -23,7 +23,7 @@
       </div>
   
       <div class="content">
-        {{ entry.content|safe|linebreaks|truncatechars_html:800 }}
+        {{ entry.content|safe|linebreaks|truncatechars_html:200 }}
         <a href="{% url 'cadmus:entry' entry.slug %}" class="card-footer-item">Keep reading</a>
         <hr>
         <span>{{ entry.initial_time|date:'D j' }} <a href="{{ entry.initial_time|date:'m' }}">{{ entry.initial_time|date:'F,' }}</a></span>

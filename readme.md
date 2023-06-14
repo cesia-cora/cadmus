@@ -6,6 +6,7 @@ Cadmus is a web app made to post and see your entries, as an personal diary/jour
 - Post, view, edit and delete entries
 - Filter entries through years and months
 - Rich text formatting
+- Search bar
 - Cute 3D images from [Ouch!][def3]
 
 ### Why "Cadmus"?

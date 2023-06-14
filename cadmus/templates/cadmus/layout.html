@@ -4,44 +4,50 @@
 <html lang="en">
 
 <head>
-		<meta charset="UTF-8">
-		<title>{% block title %}Cadmus - Personal Diary{% endblock %}</title>
-		<!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">-->
-		<link href="{% static 'cadmus/styles.css' %}" rel="stylesheet">
+	<meta charset="UTF-8">
+	<title>{% block title %}Cadmus - Personal Diary{% endblock %}</title>
+	<link href="{% static 'cadmus/styles.css' %}" rel="stylesheet">
 
-		<link rel="shortcut icon" type="image/png" href="{% static 'cadmus/journal-96.png' %}"/>
+	<link rel="shortcut icon" type="image/png" href="{% static 'cadmus/journal-96.png' %}" />
 
-		<link rel="preconnect" href="https://fonts.googleapis.com">
-		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-	</head>
+	<link rel="preconnect" href="https://fonts.googleapis.com">
+	<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+</head>
 
-	<body>
-		<div class="container-flex">
+<body>
+	<div class="container-flex">
 		<nav class="navbar" role="navigation" aria-label="main navigation">
 			<div class="navbar-brand">
 				<picture>
-					<source srcset="{% static 'cadmus/cafe-night.png' %}" media="(prefers-color-scheme: dark)">
-					<img src="{% static 'cadmus/cafe-96.png' %}" width="60" height="60">
+					<source srcset="{% static 'cadmus/cafe-light.png' %}" media="(prefers-color-scheme: dark)">
+					<img src="{% static 'cadmus/cafe-dark.png' %}" width="60" height="60">
 				</picture>
 			</div>
-		  
+
 			<div id="navbarBasicExample" class="navbar-menu">
 				<div class="navbar-start">
 					<a class="navbar-item" href="{% url 'cadmus:index' %}">
 						Home
 					</a>
-				{% if request.user.is_authenticated %}
+					{% if request.user.is_authenticated %}
 					<a class="navbar-item" href="{% url 'cadmus:create' %}">
 						Add Entry
 					</a>
 
-				{% else %}
-				<!--Nothing at all!-->
-				{% endif %}
+					{% else %}
+					<!--Nothing at all!-->
+					{% endif %}
 				</div>
 
 				{% if request.user.is_authenticated %}
 				<div class="navbar-end">
+					<form action="{% url 'cadmus:search_results' %}" method="get">
+						<div class="field">
+							<div class="control">
+								<input class="input" name="q" type="text" placeholder="Search">
+							</div>
+						</div>
+					</form>
 					<p class="navbar-item">{{ request.user }}</p>
 					<div class="navbar-item">
 						<div class="buttons">
@@ -66,7 +72,7 @@
 				</div>
 			</div>
 			{% endif %}
-		  </nav>
+		</nav>
 
 		{% block body %}
 
@@ -76,17 +82,21 @@
 			<div class="has-text-centered">
 				&copy Copyright 2022 by Cadmus
 				<br>
+				<div>
+					<a href="/">Privacidad</a>
+					<span>|</span>
+					<a href="/">Términos y Condiciones</a>
+					<span>|</span>
+					<a href="/">Política de Cookies</a>
+				</div>
 				<picture>
 					<source srcset="{% static 'cadmus/github-night.png' %}" media="(prefers-color-scheme: dark)">
-					<img class="mt-2" src="{% static 'cadmus/github-icon.png' %}"> <a href="https://www.github.com/cesia-cora" target="_blank">Github</a>
-				</picture>
-				<picture>
-					<source srcset="{% static 'cadmus/linkedin-night.png' %}" media="(prefers-color-scheme: dark)">
-					<img src="{% static 'cadmus/linkedin-icon.png' %}"> <a href="https://www.linkedin.com/in/cesia-cora" target="_blank">LinkedIn</a>
+					<img class="mt-2" src="{% static 'cadmus/github-icon.png' %}"> <a
+						href="https://www.github.com/cesia-cora" target="_blank"></a>
 				</picture>
 			</div>
-		  </footer>
-	<script src="{% static 'cadmus/index.js' %}"></script>
-	</body>
+		</footer>
+		<script src="{% static 'cadmus/index.js' %}"></script>
+</body>
 
 </html>
