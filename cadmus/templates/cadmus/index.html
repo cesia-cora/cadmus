@@ -29,8 +29,8 @@
             <span><a href="{{ entry.initial_time|date:'Y' }}">{{ entry.initial_time|date:'Y' }}</a></span>
             <span>{{ entry.initial_time|date:'| h:i a' }}</span>
             {% if entry.initial_time|date:'h:i a' != entry.last_modified|date:'h:i a' %}
-            <br><span class="last-modified">Last modified:</span> <span>{{ entry.last_modified|date:'D j ' }}<a href="{{ entry.last_modified|date:'Y/m' }}">{{ entry.last_modified|date:'F,' }}</a></span>
-            <span><a href="{{ entry.last_modified|date:'Y' }}">{{ entry.last_modified|date:'Y' }}</a></span>
+            <br><span class="last-modified">Last modified:</span> <span>{{ entry.last_modified|date:'D j ' }}{{ entry.last_modified|date:'F,' }}</span>
+            <span>{{ entry.last_modified|date:'Y' }}</span>
             <span>{{ entry.last_modified|date:'| h:i a'}}</span>
             {% else %}
             <br><span><i>Not modified yet</i></span>

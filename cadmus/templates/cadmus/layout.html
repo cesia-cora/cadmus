@@ -80,20 +80,21 @@
 
 		<footer class="footer" id="footer">
 			<div class="has-text-centered">
-				&copy Copyright 2022 by Cadmus
+				&copy Copyright 2023 by Cadmus
 				<br>
 				<div>
-					<a href="/">Privacidad</a>
+					<a href="/">Privacy</a>
 					<span>|</span>
-					<a href="/">Términos y Condiciones</a>
+					<a href="/">Terms and Conditions</a>
 					<span>|</span>
-					<a href="/">Política de Cookies</a>
+					<a href="/">Cookies Policy</a>
 				</div>
-				<picture>
-					<source srcset="{% static 'cadmus/github-night.png' %}" media="(prefers-color-scheme: dark)">
-					<img class="mt-2" src="{% static 'cadmus/github-icon.png' %}"> <a
-						href="https://www.github.com/cesia-cora" target="_blank"></a>
-				</picture>
+				<a href="https://www.github.com/cesia-cora" target="_blank">
+					<picture>
+						<source srcset="{% static 'cadmus/github-night.png' %}" media="(prefers-color-scheme: dark)">
+						<img class="mt-2" src="{% static 'cadmus/github-icon.png' %}">
+					</picture>
+				</a>
 			</div>
 		</footer>
 		<script src="{% static 'cadmus/index.js' %}"></script>
