@@ -1,7 +1,7 @@
 asgiref==3.5.2
 certifi==2023.7.22
 charset-normalizer==2.1.1
-Django==4.2.3
+Django==4.2.7
 django-ckeditor==6.5.1
 django-js-asset==2.0.0
 idna==3.4
@@ -9,5 +9,5 @@ python-decouple==3.8
 requests==2.31.0
 sqlparse==0.4.4
 tzdata==2022.2
-urllib3==1.26.12
+urllib3==2.1.0
 reportlab==4.0.7
