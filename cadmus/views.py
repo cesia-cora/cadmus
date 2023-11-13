@@ -1,14 +1,15 @@
-from cmath import log
 from django.shortcuts import render
-from django.http import HttpResponseRedirect
+from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.dates import MonthArchiveView, YearArchiveView
 from django.views.generic import ListView
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout
-from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db import IntegrityError
 from django.core.paginator import Paginator
+from django.utils.html import strip_tags
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import letter
 from .models import *
 from .forms import *
 
@@ -139,6 +140,68 @@ def entry(request, slug):
 	return render(request, "cadmus/entry.html", {
 		"entry": entry
 	})
+
+def download_entry(request, slug):
+
+	entry = Entry.objects.get(slug=slug)
+
+	# pdf generator
+	filename = f'{entry.slug}'
+	response = HttpResponse(content_type='application/pdf')
+	response['Content-Disposition'] = f'attachment; filename="{filename}".pdf"'
+
+	# create canvas object and generate pdf content
+	p = canvas.Canvas(response, pagesize=letter)
+
+	y = 700
+	page_width, page_height = letter
+
+	p.setFillColorRGB(0.29296875, 0.453125, 0.609375)
+	title_height = 40
+	p.setFont('Helvetica', 20)
+	p.drawString(60, y + title_height, f'{entry.title}')
+
+	p.setFillColorRGB(0.078125, 0.078125, 0.078125)
+	p.setFont("Helvetica", 9)
+	p.drawString(60, y + title_height - 30, f'Created at: {entry.initial_time}')
+	p.drawString(60, y + title_height - 50, f'Updated at: {entry.last_modified}')
+	
+	p.setFillColorRGB(0.078125, 0.078125, 0.078125)
+	p.setFont('Helvetica', 11)
+	content_entry = f'{entry.content}'
+	content = strip_tags(content_entry)
+	paragraphs = content.split('\n\n')
+	line_height = 10
+	line_spacing = 10
+	max_line_width = page_width - 120
+
+	# Adjust the starting position of the content to avoid overlap
+	y = y + title_height - 90
+
+	for i, paragraph in enumerate(paragraphs):
+		lines = paragraph.split('\n')
+		current_y = y - i * (line_height + line_spacing)
+		for line in lines:
+			line = line.strip()
+			if line:
+				words = line.split()
+				current_line = ""
+
+				for word in words:
+					if p.stringWidth(current_line + " " + word) < max_line_width:
+						current_line += " " + word
+					else:
+						p.drawString(60, current_y, current_line.strip())
+						current_line = word
+						current_y -= line_height + line_spacing
+				if current_line:
+					p.drawString(60, current_y, current_line.strip())
+					current_y -= line_height + line_spacing
+
+	p.showPage()
+	p.save()
+
+	return response
 
 def edit_entry(request, slug):
 

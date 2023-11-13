@@ -11,6 +11,7 @@ urlpatterns = [
     path('search', SearchResultsView.as_view(), name='search_results'),
     path('create/', views.create_entry, name="create"),
     path('entry/<slug:slug>', views.entry, name='entry'),
+    path('entry/<slug:slug>/download', views.download_entry, name='download_entry'),
     path('register', views.register, name="register"),
     path('login', views.login_view, name="login"),
     path('logout', views.logout_view, name="logout"),

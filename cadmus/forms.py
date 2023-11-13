@@ -10,3 +10,9 @@ class EntryForm(ModelForm):
 		'slug': forms.TextInput(attrs={'placeholder': 'Type something like "this-is-my-entry"', 'class': 'input self-input-post',}),
 		'content': forms.Textarea(attrs={'placeholder': 'Type your entry here', 'class': 'textarea self-input-post'}),
 		'initial_time': forms.DateTimeInput(attrs={'class': 'input self-input-post'})}
+	
+	def clean_slug(self):
+		slug = self.cleaned_data.get('slug')
+		if Entry.objects.filter(slug=slug).exists():
+			raise forms.ValidationError('This slug already exists. Please, type another one.')
+		return slug

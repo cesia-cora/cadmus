@@ -20,6 +20,9 @@
     <label class="label is-size-5">Slug:</label>
     <p class="is-size-6">Maximum length of 200 characters. This will be your entry URL.</p>
     {{ entry_form.slug }}
+    {% if entry_form.slug.errors %}
+        <div class="error">{{ entry_form.slug.errors }}</div>
+    {% endif %}
     <label class="label is-size-5">Content:</label>
     <p class="is-size-6">No length limits.</p>
     {{ entry_form.content }}

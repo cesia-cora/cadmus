@@ -56,9 +56,6 @@ body {
 	transition: all 0.5s ease-in-out;
 }
 
-.grid-item { width: 200px; }
-.grid-item--width2 { width: 400px; }
-
 .card-2 {
 	width: 80%;
 	margin: 0 0 20px 10%;
