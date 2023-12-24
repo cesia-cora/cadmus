@@ -232,3 +232,6 @@ def delete_entry(request, slug):
 def archive_month(request):
 
 	return render(request, "cadmus/entry_archive_month.html")
+
+def calendar(request):
+	return render(request, "cadmus/calendar.html")
