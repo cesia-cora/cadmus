@@ -5,12 +5,12 @@
 
 {% if request.user.is_authenticated %}
 <div class="main">
-<div class="title is-4 has-text-centered title-template is-uppercase">Recent entries</div>
+  <div class="title is-4 has-text-centered title-template is-uppercase">Recent entries</div>
 
-<form action="{% url 'cadmus:index' %}" method="GET">
-  <div class="cards">
-    {% for entry in page_obj %}
-    {% if entry.creator == request.user %}
+  <form action="{% url 'cadmus:index' %}" method="GET">
+    <div class="cards">
+      {% for entry in page_obj %}
+      {% if entry.creator == request.user %}
       <div class="card card2">
         <div class="card-image"></div>
         <div class="card-content">
@@ -20,7 +20,7 @@
               <p class="title is-4">{{ entry.title }}</p>
             </div>
           </div>
-      
+
           <div class="content">
             {{ entry.content|safe|linebreaks|truncatechars_html:200 }}
             <a href="{% url 'cadmus:entry' entry.slug %}" class="card-footer-item">Keep reading</a>
@@ -29,7 +29,7 @@
             <span><a href="{{ entry.initial_time|date:'Y' }}">{{ entry.initial_time|date:'Y' }}</a></span>
             <span>{{ entry.initial_time|date:'| h:i a' }}</span>
             {% if entry.initial_time|date:'h:i a' != entry.last_modified|date:'h:i a' %}
-            <br><span class="last-modified">Last modified:</span> <span>{{ entry.last_modified|date:'D j ' }}{{ entry.last_modified|date:'F,' }}</span>
+            <br><span class="last-modified">Last modified:</span> <span>{{ entry.last_modified|date:'D j ' }} {{ entry.last_modified|date:'F,' }}</span>
             <span>{{ entry.last_modified|date:'Y' }}</span>
             <span>{{ entry.last_modified|date:'| h:i a'}}</span>
             {% else %}
@@ -39,47 +39,48 @@
         </div>
       </div>
       {% endif %}
-    {% endfor %}
+      {% endfor %}
     </div>
   </form>
 
-<div class="pagination field-is-grouped">
-  <span class="step-links control">
+  <div class="pagination field-is-grouped">
+    <span class="step-links control">
       {% if page_obj.has_previous %}
-          <a class="button is-danger" href="?page=1">&laquo; first</a>
-          <a class="button is-danger" href="?page={{ page_obj.previous_page_number }}">previous</a>
+      <a class="button is-danger" href="?page=1">&laquo; first</a>
+      <a class="button is-danger" href="?page={{ page_obj.previous_page_number }}">previous</a>
       {% endif %}
 
       <button class="current button">
-          Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
+        Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}.
       </button>
 
       {% if page_obj.has_next %}
-          <a class="button is-link" href="?page={{ page_obj.next_page_number }}">next</a>
-          <a class="button is-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
+      <a class="button is-link" href="?page={{ page_obj.next_page_number }}">next</a>
+      <a class="button is-link" href="?page={{ page_obj.paginator.num_pages }}">last &raquo;</a>
       {% endif %}
-  </span>
-</div>
-
-{% else %}
-<div id="container-message">
-  
-  <div class="box" id="features">
-    <strong>Features</strong>
-    <ul>
-      <li>Completely free!</li>
-      <li>Post, get, update and delete entries</li>
-      <li>Rich text editor</li>
-      <li>Filter entries through years and months</li>
-    </ul>
-    <br>
-    Register or log in to start making your entries!
+    </span>
   </div>
-  <br>
-  <img src="{% static 'cadmus/casual-life-3d-girl-stretches-with-a-laptop.png' %}" width="250">
-</div>
-<p class="is-size-7 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
-{% endif %}
+
+  {% else %}
+  <div id="container-message">
+
+    <div class="box" id="features">
+      <strong>Features</strong>
+      <ul>
+        <li>Completely free!</li>
+        <li>Post, get, update and delete entries</li>
+        <li>Rich text editor</li>
+        <li>Filter entries through years and months</li>
+      </ul>
+      <br>
+      Register or log in to start making your entries!
+    </div>
+    <br>
+    <img src="{% static 'cadmus/casual-life-3d-girl-stretches-with-a-laptop.png' %}" width="250">
+  </div>
+  <p class="is-size-7 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a>
+    from <a href="https://icons8.com/illustrations">Ouch!</a></p>
+  {% endif %}
 </div>
 
 <script src="https://unpkg.com/masonry-layout@4/dist/masonry.pkgd.min.js"></script>

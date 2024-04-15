@@ -162,9 +162,11 @@ def download_entry(request, slug):
 	p.drawString(60, y + title_height, f'{entry.title}')
 
 	p.setFillColorRGB(0.078125, 0.078125, 0.078125)
-	p.setFont("Helvetica", 9)
-	p.drawString(60, y + title_height - 30, f'Created at: {entry.initial_time}')
-	p.drawString(60, y + title_height - 50, f'Updated at: {entry.last_modified}')
+	p.setFont("Helvetica", 10)
+	created_at = entry.initial_time.strftime('%B %d %Y %H:%M')
+	last_updated = entry.last_modified.strftime('%B %d %Y %H:%M')
+	p.drawString(60, y + title_height - 30, f'Created at: {created_at}')
+	p.drawString(60, y + title_height - 50, f'Last updated: {last_updated}')
 	
 	p.setFillColorRGB(0.078125, 0.078125, 0.078125)
 	p.setFont('Helvetica', 11)

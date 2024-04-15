@@ -16,7 +16,7 @@
 
 <body>
 	<div class="container-flex">
-		<nav class="navbar" role="navigation" aria-label="main navigation">
+		<!-- <nav class="navbar" role="navigation" aria-label="main navigation">
 			<div class="navbar-brand">
 				<picture>
 					<source srcset="{% static 'cadmus/cafe-light.png' %}" media="(prefers-color-scheme: dark)">
@@ -38,7 +38,7 @@
 					</a>
 
 					{% else %}
-					<!--Nothing at all!-->
+					
 					{% endif %}
 				</div>
 
@@ -75,7 +75,48 @@
 				</div>
 			</div>
 			{% endif %}
-		</nav>
+		</nav> -->
+
+		<div class="split left">
+			<div class="centered">
+				<aside class="menu">
+					{% if request.user.is_authenticated %}
+					<form action="{% url 'cadmus:search_results' %}" method="get">
+						<div class="field">
+							<div class="control">
+								<input class="input" name="q" type="text" placeholder="Search">
+							</div>
+						</div>
+					</form>
+					{% endif %}
+					<br>
+					<picture>
+						<source srcset="{% static 'cadmus/cafe-light.png' %}" media="(prefers-color-scheme: dark)">
+						<img src="{% static 'cadmus/cafe-dark.png' %}">
+					</picture>
+					<p class="menu-label">General</p>
+					<ul class="menu-list">
+						<li><a href="{% url 'cadmus:index' %}">Home</a></li>
+						<li><a href="{% url 'cadmus:create' %}">Add Entry</a></li>
+						<li><a href="{% url 'cadmus:calendar' %}">Calendar</a></li>
+					</ul>
+					<p class="menu-label">Authentication</p>
+					<ul class="menu-list">
+						{% if request.user.is_authenticated %}
+						<li><a>{{ request.user }}</a></li>
+						<li><a href="{% url 'cadmus:logout' %}">Log out</a></li>
+						{% else %}
+						<li><a class="button is-danger is-size-5" href="{% url 'cadmus:register' %}">
+							Sign up
+						</a></li>
+						<li><a class="button is-link is-size-5" href="{% url 'cadmus:login' %}">
+							Log in
+						</a></li>
+						{% endif %}
+					</ul>
+				</aside>
+			</div>
+		</div>
 
 		{% block body %}
 
@@ -83,7 +124,7 @@
 
 		<footer class="footer" id="footer">
 			<div class="has-text-centered">
-				&copy Copyright 2023 by Cadmus
+				&copy Copyright 2023-2024 by Cadmus
 				<br>
 				<div>
 					<a href="/">Privacy</a>
@@ -92,12 +133,13 @@
 					<span>|</span>
 					<a href="/">Cookies Policy</a>
 				</div>
-				<a href="https://www.github.com/cesia-cora" target="_blank">
+				<a href="https://www.github.com/cesia-cora/cadmus" target="_blank">
 					<picture>
 						<source srcset="{% static 'cadmus/github-night.png' %}" media="(prefers-color-scheme: dark)">
 						<img class="mt-2" src="{% static 'cadmus/github-icon.png' %}">
 					</picture>
 				</a>
+				<p class="is-size-7 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
 			</div>
 		</footer>
 		<script src="{% static 'cadmus/index.js' %}"></script>

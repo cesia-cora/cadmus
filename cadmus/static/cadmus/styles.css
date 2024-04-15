@@ -2,7 +2,8 @@
 @import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400&display=swap');
 @import "bulma.min.css";
 
-body, html {
+body,
+html {
 	margin: 0;
 }
 
@@ -37,7 +38,7 @@ body {
 }
 
 .title {
-	margin-top: 2%;
+	padding-top: 2% !important;
 }
 
 .card {
@@ -57,8 +58,8 @@ body {
 }
 
 .card-2 {
-	width: 80%;
-	margin: 0 0 20px 10%;
+	width: 70%;
+	margin: 0 10% 20px 20%;
 }
 
 .card-footer {
@@ -77,7 +78,7 @@ body {
 	flex-direction: row;
 	flex-wrap: wrap;
 	align-items: flex-start;
-	margin: 10px 30px;
+	margin: 10px 30px 10px 20%;
 }
 
 .container-create {
@@ -85,7 +86,7 @@ body {
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: center;
-	margin: 0 0 4% 10%;
+	margin: 0 0 4% 20%;
 	gap: 15px;
 }
 
@@ -98,14 +99,17 @@ body {
 	font-family: 'Ysabeau', sans-serif;
 }
 
-.pagination, .navbar, footer {
+.pagination,
+.navbar,
+footer {
 	font-family: 'Nunito', sans-serif;
 }
 
-.pagination, #img-404 {
+.pagination,
+#img-404 {
 	display: block;
-  	margin-left: auto;
-  	margin-right: auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 .pagination {
@@ -137,8 +141,8 @@ body {
 
 #center-position {
 	display: block;
-  	margin-left: auto;
-  	margin-right: auto;
+	margin-left: auto;
+	margin-right: auto;
 }
 
 #features {
@@ -149,7 +153,7 @@ body {
 	border: 1px solid black;
 }
 
-#features > ul > li {
+#features>ul>li {
 	list-style-type: disc;
 }
 
@@ -201,10 +205,37 @@ body {
 	margin: 10px;
 }
 
+.split {
+	height: 100%;
+	width: 15%;
+	position: fixed;
+	z-index: 1;
+	overflow-x: hidden;
+}
+
+.left {
+	left: 0;
+	background-color: whitesmoke;
+	border-right: 1px solid #6c757d;
+}
+
+.centered {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+}
+
+.centered img {
+	width: 60px;
+	border-radius: 50%;
+}
+
 @media (prefers-color-scheme: dark) {
 
 	body {
-		background-color: rgb(24, 22, 22);
+		background-color: #212529;
 		color: whitesmoke;
 	}
 
@@ -221,18 +252,21 @@ body {
 	}
 
 	#footer {
-		background-color: rgb(24, 22, 22);;
+		background-color: #212529;
+		;
 		border-top: 1px solid black;
 		color: whitesmoke;
 	}
 
 	.navbar {
-		background: rgb(30, 26, 26);;
+		background: rgb(30, 26, 26);
+		;
 		color: whitesmoke;
 		border: 1px solid rgb(86, 79, 79);
 	}
 
-	a.navbar-item, .navbar-item {
+	a.navbar-item,
+	.navbar-item {
 		color: hsl(204, 86%, 53%);
 	}
 
@@ -241,9 +275,12 @@ body {
 		color: rosybrown;
 	}
 
-	#features, strong {
-		background: rgb(46, 44, 44);;
+	#features,
+	strong {
+		background: #212529;
+		;
 		color: whitesmoke;
+		border: 1px solid rgb(86, 86, 86);
 	}
 
 	.label {
@@ -251,8 +288,10 @@ body {
 		margin-top: 2%;
 	}
 
-	.card, .title {
-		background-color: rgb(33, 31, 31);;
+	.card,
+	.title {
+		background-color: #212529;
+		;
 		color: rgb(179, 179, 179);
 	}
 
@@ -272,5 +311,11 @@ body {
 
 	.input::placeholder {
 		color: grey;
+	}
+
+	.left {
+		left: 0;
+		background-color: #212529;
+		border-right: 1px solid #ced4da;
 	}
 }
