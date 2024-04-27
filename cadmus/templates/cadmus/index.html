@@ -61,25 +61,40 @@
     </span>
   </div>
 
-  {% else %}
+  {% else %}  
   <div id="container-message">
 
     <div class="box" id="features">
-      <strong>Features</strong>
-      <ul>
-        <li>Completely free!</li>
-        <li>Post, get, update and delete entries</li>
-        <li>Rich text editor</li>
-        <li>Filter entries through years and months</li>
-      </ul>
+      <b class="is-size-3">Cadmus' features</b>
+      <dl class="is-size-5">
+        <br>
+        <dt>🆓 Completely free!</dt>
+        <dd>Users can access and use the website <span class="has-text-danger">without any cost</span>.</dd>
+        <br>
+        <dt>🔒 Totally private entries</dt>
+        <dd>All entries are kept <span class="has-text-danger">confidential and secure</span> from unauthorized access.</dd>
+        <br>
+        <dt>📝 Post, view, update and delete your entries</dt>
+        <dd>Users have the ability to <span class="has-text-danger">create, read, update, and delete</span> their entries on the website.</dd>
+        <br>
+        <dt>🖺 Rich text editor</dt>
+        <dd>Users can format their entries with <span class="has-text-danger">various text styles, fonts, and colors</span>.</dd>
+        <br>
+        <dt>📅 Filter entries by datetime and tags</dt>
+        <dd>Users can sort and organize their entries based on <span class="has-text-danger">date and tags</span>.</dd>
+        <br>
+        <dt>⬇️ Download entries as PDF</dt>
+        <dd>Users have the option to <span class="has-text-danger">save entries in a PDF format</span> for offline viewing.</dd>
+        <br>
+        <dt>🕵🏽 Secure end-to-end encryption</dt>
+        <dd>All data is encrypted from the moment it is entered until it reaches its destination, ensuring <span class="has-text-danger">maximum security and privacy</span>.</dd>
+      </dl>
       <br>
-      Register or log in to start making your entries!
+      <p class="is-size-3">Register or log in to start making your entries!</p>
     </div>
     <br>
     <img src="{% static 'cadmus/casual-life-3d-girl-stretches-with-a-laptop.png' %}" width="250">
   </div>
-  <p class="is-size-7 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a>
-    from <a href="https://icons8.com/illustrations">Ouch!</a></p>
   {% endif %}
 </div>
 

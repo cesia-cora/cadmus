@@ -77,7 +77,10 @@
 			{% endif %}
 		</nav> -->
 
-		<div class="split left">
+		<button class="openbtn button is-danger" onclick="openNav()">&#9776;</button>
+
+		<div class="split sidepanel" id="mySidepanel">
+			<a href="javascript:void(0)" class="closebtn" onclick="closeNav()">&times;</a>
 			<div class="centered">
 				<aside class="menu">
 					{% if request.user.is_authenticated %}
@@ -100,23 +103,29 @@
 						<li><a href="{% url 'cadmus:create' %}">Add Entry</a></li>
 						<li><a href="{% url 'cadmus:calendar' %}">Calendar</a></li>
 					</ul>
-					<p class="menu-label">Authentication</p>
+					<p class="menu-label">Auth</p>
 					<ul class="menu-list">
 						{% if request.user.is_authenticated %}
 						<li><a>{{ request.user }}</a></li>
 						<li><a href="{% url 'cadmus:logout' %}">Log out</a></li>
 						{% else %}
-						<li><a class="button is-danger is-size-5" href="{% url 'cadmus:register' %}">
-							Sign up
-						</a></li>
-						<li><a class="button is-link is-size-5" href="{% url 'cadmus:login' %}">
-							Log in
-						</a></li>
+						<li><a class="button is-normal is-outlined is-danger" href="{% url 'cadmus:register' %}">
+								Sign up
+							</a></li>
+						<li><a class="button is-normal is-outlined is-link" href="{% url 'cadmus:login' %}">
+								Log in
+							</a></li>
 						{% endif %}
 					</ul>
 				</aside>
 			</div>
 		</div>
+
+		<div class="index-first-par">
+			<div class="has-text-centered is-size-3 has-text-danger">CADMUS</div>
+			<br>
+			<div class="has-text-centered has-text-light is-size-1">THE SIMPLEST WAY TO WRITE YOUR THOUGHTS</div>
+		  </div>
 
 		{% block body %}
 
@@ -139,10 +148,18 @@
 						<img class="mt-2" src="{% static 'cadmus/github-icon.png' %}">
 					</picture>
 				</a>
-				<p class="is-size-7 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
 			</div>
 		</footer>
 		<script src="{% static 'cadmus/index.js' %}"></script>
+
+		<script>
+			function openNav() {
+				document.getElementById("mySidepanel").style.width = "250px";
+			}
+			function closeNav() {
+				document.getElementById("mySidepanel").style.width = "0";
+			}
+		</script>
 </body>
 
 </html>

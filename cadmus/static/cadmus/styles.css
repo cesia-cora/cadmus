@@ -25,6 +25,15 @@ body {
 	min-height: 100vh;
 }
 
+.index-first-par {
+	background-image: linear-gradient(rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.4)), url(peter-conlan-yLyDmpfivus-unsplash.jpg);
+	background-size: cover;
+	background-position-y: 80%;
+	background-attachment: fixed;
+	background-repeat: no-repeat;
+	padding: 50px;
+}
+
 #footer {
 	background-color: whitesmoke;
 	text-align: center;
@@ -58,8 +67,11 @@ body {
 }
 
 .card-2 {
-	width: 70%;
-	margin: 0 10% 20px 20%;
+	width: 80%;
+	margin-left: auto;
+	margin-right: auto;
+	border: none;
+	box-shadow: none;
 }
 
 .card-footer {
@@ -78,7 +90,7 @@ body {
 	flex-direction: row;
 	flex-wrap: wrap;
 	align-items: flex-start;
-	margin: 10px 30px 10px 20%;
+	margin: 2% 10%;
 }
 
 .container-create {
@@ -86,7 +98,7 @@ body {
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: center;
-	margin: 0 0 4% 20%;
+	margin: 0 0 4% 10%;
 	gap: 15px;
 }
 
@@ -148,13 +160,15 @@ footer {
 #features {
 	background: whitesmoke;
 	margin-top: 2%;
-	width: 350px;
+	width: 800px;
 	padding: 40px;
-	border: 1px solid black;
+	border: none;
+	box-shadow: none;
 }
 
-#features>ul>li {
-	list-style-type: disc;
+#features>dl>dt {
+	list-style-type: none;
+	padding: 5px;
 }
 
 .authentication {
@@ -162,8 +176,12 @@ footer {
 	flex-direction: row;
 	justify-content: center;
 	align-items: center;
-	margin: 0 0 2% 10%;
+	margin: 5% 0 2% 10%;
 	gap: 100px;
+}
+
+.menu-list a {
+	color: grey;
 }
 
 #btn-register {
@@ -198,25 +216,12 @@ footer {
 
 .message {
 	width: 30%;
-	margin-left: 35%;
+	margin: auto;
+	margin-top: 2%;
 }
 
 .field {
 	margin: 10px;
-}
-
-.split {
-	height: 100%;
-	width: 15%;
-	position: fixed;
-	z-index: 1;
-	overflow-x: hidden;
-}
-
-.left {
-	left: 0;
-	background-color: whitesmoke;
-	border-right: 1px solid #6c757d;
 }
 
 .centered {
@@ -232,11 +237,45 @@ footer {
 	border-radius: 50%;
 }
 
+.sidepanel {
+	height: 100%;
+	width: 0;
+	position: fixed;
+	z-index: 1;
+	overflow-x: hidden;
+	top: 0;
+	background-color: whitesmoke;
+	border-right: 1px solid grey;
+	padding-top: 60px;
+	transition: 0.5s;
+}
+
+.sidepanel .closebtn {
+	position: absolute;
+	top: 0;
+	right: 25px;
+	font-size: 36px;
+	margin-left: 50px;
+}
+
+.openbtn {
+	position: absolute;
+	width: 4%;
+	font-size: 20px;
+	cursor: pointer;
+	background-color: white;
+	color: grey;
+	padding: 10px 15px;
+}
+
+.openbtn:hover {
+	background-color: #444;
+}
+
 @media (prefers-color-scheme: dark) {
 
 	body {
 		background-color: #212529;
-		color: whitesmoke;
 	}
 
 	a {
@@ -279,8 +318,8 @@ footer {
 	strong {
 		background: #212529;
 		;
-		color: whitesmoke;
-		border: 1px solid rgb(86, 86, 86);
+		border: none;
+		box-shadow: none;
 	}
 
 	.label {
@@ -317,5 +356,18 @@ footer {
 		left: 0;
 		background-color: #212529;
 		border-right: 1px solid #ced4da;
+	}
+
+	.sidepanel {
+		height: 100%;
+		width: 0;
+		position: fixed;
+		z-index: 1;
+		overflow-x: hidden;
+		top: 0;
+		background-color: #212529;
+		border-right: 1px solid grey;
+		padding-top: 60px;
+		transition: 0.5s;
 	}
 }

@@ -7,11 +7,39 @@ from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.db import IntegrityError
 from django.core.paginator import Paginator
+from django.utils import timezone
+from django.conf import settings
+from datetime import datetime
 from django.utils.html import strip_tags
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from cryptography.fernet import Fernet, InvalidToken
 from .models import *
 from .forms import *
+
+"""key = Fernet.generate_key()
+print(key.decode())"""
+
+"""key = settings.FERNET_KEY
+if key is None:
+    raise ValueError("FERNET_KEY environment variable is not set.")
+cipher_suite = Fernet(key.encode())
+
+def encrypt_text(text):
+    try:
+        return cipher_suite.encrypt(text.encode()).decode()
+    except Exception as e:
+        print(f"Encrypt error: {e}")
+        return None
+
+def decrypt_text(encrypted_text):
+	try:
+		return cipher_suite.decrypt(encrypted_text.encode()).decode()
+	except InvalidToken:
+		print("Encrypted token is invalid or has been altered.")
+	except Exception as e:
+		print(f"Encrypt error: {e}")
+		return None"""
 
 class EntryMonthArchiveView(MonthArchiveView):
     queryset = Entry.objects.all()
@@ -31,9 +59,18 @@ class SearchResultsView(ListView):
 	
 	def get_queryset(self):
 		query = self.request.GET.get("q")
+		date_query = self.request.GET.get("date")
 		object_list = Entry.objects.filter(
 				Q(title__icontains=query) | Q(content__icontains=query)
 			)
+
+		if date_query:
+			try:
+				date = datetime.strptime(date_query, '%Y-%m-%d')
+				object_list = object_list.filter(initial_time__date=date)
+			except ValueError:
+				pass
+
 		return object_list
 
 def index(request):
@@ -123,6 +160,7 @@ def create_entry(request):
 		if entry_form.is_valid():
 
 			new_entry = entry_form.save(commit=False)
+			new_entry.content = new_entry.content
 			new_entry.creator = request.user
 			new_entry.save()
 
@@ -136,6 +174,7 @@ def create_entry(request):
 def entry(request, slug):
 
 	entry = Entry.objects.get(slug=slug)
+	entry.content = entry.content
 
 	return render(request, "cadmus/entry.html", {
 		"entry": entry
@@ -163,8 +202,14 @@ def download_entry(request, slug):
 
 	p.setFillColorRGB(0.078125, 0.078125, 0.078125)
 	p.setFont("Helvetica", 10)
-	created_at = entry.initial_time.strftime('%B %d %Y %H:%M')
-	last_updated = entry.last_modified.strftime('%B %d %Y %H:%M')
+	if entry.initial_time:
+		created_at = entry.initial_time.strftime('%B %d %Y %H:%M')
+	else:
+		created_at = "N/A"
+	if entry.last_modified:
+		last_updated = entry.last_modified.strftime('%B %d %Y %H:%M')
+	else:
+		last_updated = "N/A"
 	p.drawString(60, y + title_height - 30, f'Created at: {created_at}')
 	p.drawString(60, y + title_height - 50, f'Last updated: {last_updated}')
 	
@@ -216,6 +261,7 @@ def edit_entry(request, slug):
 		if form.is_valid():
 
 			update_entry = form.save(commit=False)
+			update_entry.content = update_entry.content
 			update_entry.save()
 
 			return HttpResponseRedirect(reverse("cadmus:index"))
