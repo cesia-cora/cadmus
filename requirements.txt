@@ -10,4 +10,8 @@ requests==2.31.0
 sqlparse==0.5.0
 tzdata==2024.1
 urllib3==2.2.1
+<<<<<<< HEAD
 reportlab==4.1.0
+=======
+reportlab==4.1.0
+>>>>>>> 6f8c649f5694b2075770bd0d4211b1a4371fb337
