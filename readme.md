@@ -1,3 +1,7 @@
+![Static Badge](https://img.shields.io/badge/Django-5.0.4-%23?labelColor=black&style=for-the-badge&logo=django&color=%233C7782)
+![Static Badge](https://img.shields.io/badge/djangockeditor-6.7.1-%23?labelColor=black&style=for-the-badge&color=%23c55e73)
+![Static Badge](https://img.shields.io/badge/reportlab-4.1.0-%23?labelColor=black&style=for-the-badge&color=%234e6041)
+
 ## CADMUS | PERSONAL DIARY PROJECT
 Cadmus is a web application made to publish and view your entries, like a personal diary/journal.
 
