@@ -13,7 +13,7 @@ from datetime import datetime
 from django.utils.html import strip_tags
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
-from cryptography.fernet import Fernet, InvalidToken
+#from cryptography.fernet import Fernet, InvalidToken
 from .models import *
 from .forms import *
 
