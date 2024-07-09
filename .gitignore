@@ -3,5 +3,7 @@
 /__pycache__
 cadmus/__pycache__
 cadmus/migrations
+cadmus/templatetags/__pycache__
 diary/__pycache__
+cadmus/tests/__pycache__
 db.sqlite3

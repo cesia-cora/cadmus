@@ -9,10 +9,11 @@ from django.db import IntegrityError
 from django.core.paginator import Paginator
 from django.utils import timezone
 from django.conf import settings
-from datetime import datetime
+from datetime import date, datetime, timedelta
 from django.utils.html import strip_tags
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from calendar import monthcalendar
 #from cryptography.fernet import Fernet, InvalidToken
 from .models import *
 from .forms import *
@@ -282,4 +283,32 @@ def archive_month(request):
 	return render(request, "cadmus/entry_archive_month.html")
 
 def calendar(request):
-	return render(request, "cadmus/calendar.html")
+	today = date.today()
+	year = int(request.GET.get('year', today.year))
+	month = int(request.GET.get('month', today.month))
+
+	cal = monthcalendar(year, month)
+
+	start_date = date(year, month, 1)
+	end_date = start_date + timedelta(days=31)
+	end_date = end_date.replace(day=1) - timedelta(days=1)
+	entries = Entry.objects.filter(initial_time__date__range=[start_date, end_date])
+
+	entry_dates = {}
+
+	for entry in entries:
+		date_str = entry.initial_time.date().strftime('%Y-%m-%d')
+		entry_dates[date_str] = entry
+
+	prev_month = date(year, month, 1) - timedelta(days=1)
+	next_month = date(year, month, 28) + timedelta(days=4)
+	next_month = next_month - timedelta(days=next_month.day)
+
+	return render(request, "cadmus/calendar.html", {
+		"calendar": cal,
+		"entry_dates": entry_dates,
+		"year": year,
+		"month": month,
+		"prev_month": prev_month,
+		"next_month": next_month
+	})

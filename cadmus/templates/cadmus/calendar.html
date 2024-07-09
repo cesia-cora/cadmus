@@ -1,8 +1,49 @@
 {% extends 'cadmus/layout.html' %}
 {% load static %}
+{% load custom_filters %}
 
 {% block body %}
+<div class="container" style="min-height: 100vh;">
+    <h1 class="title is-3 has-text-centered">{{ month|date:"F Y" }}</h1>
+    
+    <div class="has-text-centered mb-4">
+        <a href="?year={{ prev_month|date:'Y' }}&month={{ prev_month|date:'m' }}" class="button is-link is-light">Previous Month</a>
+        <a href="?year={{ next_month|date:'Y' }}&month={{ next_month|date:'m' }}" class="button is-link is-light">Next Month</a>
+    </div>
 
-<div style="min-height: 100vh;">Soon to be updated...</div>
-
+    <table class="table is-bordered is-fullwidth">
+        <thead>
+            <tr>
+                <th>Mon</th>
+                <th>Tue</th>
+                <th>Wed</th>
+                <th>Thu</th>
+                <th>Fri</th>
+                <th>Sat</th>
+                <th>Sun</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for week in calendar %}
+                <tr>
+                    {% for day in week %}
+                        <td class="has-text-centered" style="height: 100px; width: 14.28%;">
+                            {% if day != 0 %}
+                                {% with current_date=year|stringformat:"d"|add:"-"|stringformat:"02d"|add:"-"|add:day|stringformat:"02d" %}
+                                    {% if current_date in entry_dates %}
+                                        <a href="{% url 'cadmus:entry' entry_dates|get_item:current_date.slug %}" class="has-text-weight-bold">
+                                            {{ day }}
+                                        </a>
+                                    {% else %}
+                                        {{ day }}
+                                    {% endif %}
+                                {% endwith %}
+                            {% endif %}
+                        </td>
+                    {% endfor %}
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
 {% endblock %}
