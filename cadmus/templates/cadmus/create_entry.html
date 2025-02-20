@@ -29,8 +29,21 @@
     <div style="margin-left:30%;">{{ entry_form.media }}</div>
     <input type="submit" class="button is-warning" value="Post entry">
 </form>
-<img src="{% static 'cadmus/casual-life-3d-girl-meditating.png' %}" width="250">
 </div>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const titleInput = document.querySelector('input[name="title"]');
+        const slugInput = document.querySelector('input[name="slug"]');
+
+        titleInput.addEventListener('input', function() {
+            let slug = titleInput.value.toLowerCase()
+                .replace(/[^a-z0-9]+/g, '-')
+                .replace(/(^-|-$)+/g, '');
+            slugInput.value = slug;
+        });
+    });
+</script>
 
 {% else %}
 

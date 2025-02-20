@@ -257,15 +257,16 @@ def edit_entry(request, slug):
 	form = EntryForm(instance=entry)
 
 	if request.method == "POST":
-		form = EntryForm(request.POST or None, instance=entry)
+		form = EntryForm(request.POST, instance=entry)
 
 		if form.is_valid():
 
-			update_entry = form.save(commit=False)
-			update_entry.content = update_entry.content
-			update_entry.save()
+			form.save()
 
-			return HttpResponseRedirect(reverse("cadmus:index"))
+			return HttpResponseRedirect(reverse("cadmus:entry", args=[slug]))
+
+		else:
+			print(form.errors)
 
 	return render(request, "cadmus/update_entry.html", {
 		"entry": entry,
@@ -311,4 +312,12 @@ def calendar(request):
 		"month": month,
 		"prev_month": prev_month,
 		"next_month": next_month
+	})
+
+def day_entries(request, year, month, day):
+	date = datetime(year, month, day)
+	entries = Entry.objects.filter(initial_time__date=date)
+	return render(request, 'cadmus/entry_archive_date.html', {
+		'entries': entries,
+		'date': date
 	})

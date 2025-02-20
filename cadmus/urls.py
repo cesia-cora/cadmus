@@ -19,7 +19,8 @@ urlpatterns = [
     path('entry/<slug:slug>/delete', views.delete_entry, name="delete"),
     path('<int:year>', EntryYearArchiveView.as_view(), name="archive_year"),
     path('<int:year>/<int:month>', EntryMonthArchiveView.as_view(month_format='%m'), name="archive_month"),
-    path('calendar', views.calendar, name='calendar')
+    path('calendar', views.calendar, name='calendar'),
+    path('entries/<int:year>/<int:month>/<int:day>/', views.day_entries, name="day_entries")
 ]
 
 # make all static image files available for all templates

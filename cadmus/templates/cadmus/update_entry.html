@@ -11,6 +11,10 @@
 
 <div class="title is-4 title-template has-text-centered is-uppercase">Update this entry</div>
 
+<a class="button is-danger is-light" style="margin-left:2%;margin-top:1%;" href="{% url 'cadmus:entry' entry.slug %}">&#8592 Back to entry</a>
+<br>
+<br>
+
 <div class="container-create">
 <form action="" method="POST">
     {% csrf_token %}
@@ -29,9 +33,7 @@
     <div style="margin-left:30%;">{{ edit_form.media }}</div>
     <input type="submit" class="button is-warning" value="Update entry">
 </form>
-<img src="{% static 'cadmus/casual-life-3d-girl-with-cup.png' %}" width="250">
 </div>
-<p class="is-size-6 ml-2">Illustration by <a href="https://icons8.com/illustrations/author/zD2oqC8lLBBA">Icons 8</a> from <a href="https://icons8.com/illustrations">Ouch!</a></p>
 
 {% else %}
 

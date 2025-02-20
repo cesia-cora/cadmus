@@ -30,13 +30,9 @@
                         <td class="has-text-centered" style="height: 100px; width: 14.28%;">
                             {% if day != 0 %}
                                 {% with current_date=year|stringformat:"d"|add:"-"|stringformat:"02d"|add:"-"|add:day|stringformat:"02d" %}
-                                    {% if current_date in entry_dates %}
-                                        <a href="{% url 'cadmus:entry' entry_dates|get_item:current_date.slug %}" class="has-text-weight-bold">
+                                        <a href="{% url 'cadmus:day_entries' year=year month=month day=day %}" class="{% if current_date in entry_dates %}has-text-weight-bold{% endif %}">
                                             {{ day }}
                                         </a>
-                                    {% else %}
-                                        {{ day }}
-                                    {% endif %}
                                 {% endwith %}
                             {% endif %}
                         </td>

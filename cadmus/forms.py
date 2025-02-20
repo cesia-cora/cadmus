@@ -13,6 +13,6 @@ class EntryForm(ModelForm):
 	
 	def clean_slug(self):
 		slug = self.cleaned_data.get('slug')
-		if Entry.objects.filter(slug=slug).exists():
+		if Entry.objects.exclude(id=self.instance.id).filter(slug=slug).exists():
 			raise forms.ValidationError('This slug already exists. Please, type another one.')
 		return slug
