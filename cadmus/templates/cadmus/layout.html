@@ -33,7 +33,7 @@
 			  Home
 			</a>
 	  
-			<a class="navbar-item">
+			<a class="navbar-item" href="{% url 'cadmus:calendar' %}">
 			  Calendar
 			</a>
 
@@ -44,6 +44,22 @@
 		  </div>
 	  
 		  <div class="navbar-end">
+
+			<div class="navbar-item">
+				<form method="GET" action="{% url 'cadmus:search_results' %}">
+				<div class="field has-addons">
+					<div class="control">
+					  <input class="input" type="text" name="q" placeholder="Search entries...">
+					</div>
+					<div class="control">
+					  <button type="submit" class="button is-info">
+						Search
+					  </button>
+					</div>
+				  </div>
+				  </form>
+			</div>
+			
 			<div class="navbar-item">
 			  <div class="buttons">
 				{% if request.user.is_authenticated %}

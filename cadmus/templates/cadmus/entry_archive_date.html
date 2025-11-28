@@ -2,5 +2,7 @@
 {% load static %}
 
 {% block body %}
-
+{% for entry in entries %}
+    {{ entry.title }}
+{% endfor %}
 {% endblock %}

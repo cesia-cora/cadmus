@@ -14,33 +14,8 @@ from django.utils.html import strip_tags
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
 from calendar import monthcalendar
-#from cryptography.fernet import Fernet, InvalidToken
 from .models import *
 from .forms import *
-
-"""key = Fernet.generate_key()
-print(key.decode())"""
-
-"""key = settings.FERNET_KEY
-if key is None:
-    raise ValueError("FERNET_KEY environment variable is not set.")
-cipher_suite = Fernet(key.encode())
-
-def encrypt_text(text):
-    try:
-        return cipher_suite.encrypt(text.encode()).decode()
-    except Exception as e:
-        print(f"Encrypt error: {e}")
-        return None
-
-def decrypt_text(encrypted_text):
-	try:
-		return cipher_suite.decrypt(encrypted_text.encode()).decode()
-	except InvalidToken:
-		print("Encrypted token is invalid or has been altered.")
-	except Exception as e:
-		print(f"Encrypt error: {e}")
-		return None"""
 
 class EntryMonthArchiveView(MonthArchiveView):
     queryset = Entry.objects.all()
@@ -61,6 +36,10 @@ class SearchResultsView(ListView):
 	def get_queryset(self):
 		query = self.request.GET.get("q")
 		date_query = self.request.GET.get("date")
+
+		if not query:
+			return Entry.objects.none()
+			
 		object_list = Entry.objects.filter(
 				Q(title__icontains=query) | Q(content__icontains=query)
 			)
@@ -163,6 +142,11 @@ def create_entry(request):
 			new_entry = entry_form.save(commit=False)
 			new_entry.content = new_entry.content
 			new_entry.creator = request.user
+			encrypted_content = encrypt_text(new_entry.content)
+			
+			if encrypted_content:
+				new_entry.content = encrypted_content
+				
 			new_entry.save()
 
 		return HttpResponseRedirect(reverse("cadmus:index"))
@@ -285,9 +269,20 @@ def archive_month(request):
 
 def calendar(request):
 	today = date.today()
-	year = int(request.GET.get('year', today.year))
-	month = int(request.GET.get('month', today.month))
 
+	monthpicker = request.GET.get('monthpicker')
+
+	if monthpicker:
+		try:
+			year, month = map(int, monthpicker.split('-'))
+		except ValueError:
+			year = int(request.GET.get('year', today.year))
+			month = int(request.GET.get('month', today.month))
+	else:
+		year = int(request.GET.get('year', today.year))
+		month = int(request.GET.get('month', today.month))
+	
+	month_date = date(year, month, 1)
 	cal = monthcalendar(year, month)
 
 	start_date = date(year, month, 1)
@@ -301,23 +296,41 @@ def calendar(request):
 		date_str = entry.initial_time.date().strftime('%Y-%m-%d')
 		entry_dates[date_str] = entry
 
-	prev_month = date(year, month, 1) - timedelta(days=1)
-	next_month = date(year, month, 28) + timedelta(days=4)
-	next_month = next_month - timedelta(days=next_month.day)
+	prev_month = month_date - timedelta(days=1)
+	next_month = (month_date.replace(day=28) + timedelta(days=4))
+
+	prev_year = date(year - 1, month, 1)
+	next_year = date(year + 1, month, 1)
+
+	entry_days = set()
+	for e in entries:
+		entry_days.add(e.initial_time.day)
 
 	return render(request, "cadmus/calendar.html", {
 		"calendar": cal,
 		"entry_dates": entry_dates,
 		"year": year,
 		"month": month,
+		"month_date": month_date,
 		"prev_month": prev_month,
-		"next_month": next_month
+		"next_month": next_month,
+		"prev_year": prev_year,
+		"next_year": next_year,
+		"entry_days": entry_days
 	})
 
 def day_entries(request, year, month, day):
-	date = datetime(year, month, day)
-	entries = Entry.objects.filter(initial_time__date=date)
+	# rango desde 00:00:00 del día hasta antes de 00:00:00 del día siguiente
+	start = datetime(year, month, day, 0, 0, 0)
+	# hacer aware si el proyecto usa zonas horarias
+	if settings.USE_TZ:
+		start = timezone.make_aware(start, timezone.get_current_timezone())
+	end = start + timedelta(days=1)
+
+	entries = Entry.objects.filter(initial_time__gte=start, initial_time__lt=end).order_by('-initial_time')
+	day_date = start.date()
+
 	return render(request, 'cadmus/entry_archive_date.html', {
 		'entries': entries,
-		'date': date
+		'date': day_date
 	})

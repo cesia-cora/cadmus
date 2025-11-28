@@ -3,14 +3,18 @@
 {% load custom_filters %}
 
 {% block body %}
-<div class="container" style="min-height: 100vh;">
-    <h1 class="title is-3 has-text-centered">{{ month|date:"F Y" }}</h1>
+<div class="container container_calendar" style="min-height: 100vh;">
+    <h1 class="title is-3 has-text-centered">{{ month_date|date:"F Y" }}</h1>
     
-    <div class="has-text-centered mb-4">
-        <a href="?year={{ prev_month|date:'Y' }}&month={{ prev_month|date:'m' }}" class="button is-link is-light">Previous Month</a>
-        <a href="?year={{ next_month|date:'Y' }}&month={{ next_month|date:'m' }}" class="button is-link is-light">Next Month</a>
-    </div>
-
+    <a href="?year={{ prev_month|date:'Y' }}&month={{ prev_month|date:'m' }}" class="button is-link is-light">Previous Month</a>
+    <a href="?year={{ next_month|date:'Y' }}&month={{ next_month|date:'m' }}" class="button is-link is-light">Next Month</a>
+    <br>
+    <br>
+    <form method="get" style="display:inline-block; margin-left:12px;">
+		<input type="month" name="monthpicker" value="{{ year }}-{{ month|stringformat:"02d" }}" />
+		<button type="submit" class="button is-info">Go</button>
+	</form>
+    <br>
     <table class="table is-bordered is-fullwidth">
         <thead>
             <tr>
@@ -30,9 +34,15 @@
                         <td class="has-text-centered" style="height: 100px; width: 14.28%;">
                             {% if day != 0 %}
                                 {% with current_date=year|stringformat:"d"|add:"-"|stringformat:"02d"|add:"-"|add:day|stringformat:"02d" %}
-                                        <a href="{% url 'cadmus:day_entries' year=year month=month day=day %}" class="{% if current_date in entry_dates %}has-text-weight-bold{% endif %}">
+                                    {% if day in entry_days %}
+                                    <a href="{% url 'cadmus:day_entries' year=year month=month day=day %}" class="has-entry {% if current_date in entry_dates %}has-text-weight-bold{% endif %}">
+                                        {{ day }}
+                                        </a>
+                                    {% else %}
+                                        <a href="{% url 'cadmus:day_entries' year=year month=month day=day %}" class="no-entry">
                                             {{ day }}
                                         </a>
+                                    {% endif %}
                                 {% endwith %}
                             {% endif %}
                         </td>
@@ -42,4 +52,5 @@
         </tbody>
     </table>
 </div>
+<br>
 {% endblock %}

@@ -1,5 +1,6 @@
 from django.urls import path
 from django.contrib.staticfiles.urls import staticfiles_urlpatterns
+from django.contrib.auth import views as auth_views
 from . import views
 from .models import *
 from .views import EntryMonthArchiveView, EntryYearArchiveView, SearchResultsView
@@ -20,7 +21,11 @@ urlpatterns = [
     path('<int:year>', EntryYearArchiveView.as_view(), name="archive_year"),
     path('<int:year>/<int:month>', EntryMonthArchiveView.as_view(month_format='%m'), name="archive_month"),
     path('calendar', views.calendar, name='calendar'),
-    path('entries/<int:year>/<int:month>/<int:day>/', views.day_entries, name="day_entries")
+    path('entries/<int:year>/<int:month>/<int:day>/', views.day_entries, name="day_entries"),
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='registration/password_reset_form.html'), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
 ]
 
 # make all static image files available for all templates
