@@ -1,0 +1,23 @@
+{% extends 'cadmus/layout.html' %}
+
+{ % block title %}
+    Settings | Cadmus - Personal Diary
+{% endblock %}
+
+{ % block body %}
+    <div class="container">
+        <h1 class="title is-3 has-text-centered">Settings</h1>
+
+        <div>
+            <div class="title is-4">Change username</div>
+        </div>
+
+        <div>
+            <div class="title is-4">Change email</div>
+        </div>
+
+        <div>
+            <div class="title is-4"><a href="{% url 'password_reset' %}">Change password</a></div>
+        </div>
+    </div>
+{% endblock %}

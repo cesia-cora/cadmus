@@ -17,5 +17,5 @@ class TestModels(TestCase):
         self.assertEqual(user.email, 'example123@example3.com')
         self.assertEqual(str(entry.title), 'Testing')
         self.assertEqual(str(entry.slug), 'testingxy')
-        self.assertEqual(str(entry.content), 'Lorem ipsum')
+        self.assertEqual(str(entry.decrypted_content), 'Lorem ipsum')
         self.assertEqual(entry.creator, user)

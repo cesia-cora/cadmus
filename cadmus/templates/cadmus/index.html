@@ -34,7 +34,7 @@
           </div>
 
           <div class="content">
-            {{ entry.content|safe|linebreaks|truncatechars_html:200 }}
+            {{ entry.decrypted_content|safe|linebreaks|truncatechars_html:200 }}
             <a href="{% url 'cadmus:entry' entry.slug %}" class="card-footer-item">Keep reading</a>
           </div>
         </div>
@@ -69,33 +69,33 @@
       <b class="is-size-3">Cadmus' features</b>
       <dl class="is-size-5">
         <br>
-        <dt class="is-size-4">🆓 Completely free!</dt>
+        <dt>&#8594; Completely free!</dt>
         <dd>Users can access and use the website <span class="has-text-danger">without any cost</span>.</dd>
         <br>
-        <dt>🔒 Totally private entries</dt>
+        <dt>&#8594; Totally private entries</dt>
         <dd>All entries are kept <span class="has-text-danger">confidential and secure</span> from unauthorized access.
         </dd>
         <br>
-        <dt>📝 Post, view, update and delete your entries</dt>
+        <dt>&#8594; Post, view, update and delete your entries</dt>
         <dd>Users have the ability to <span class="has-text-danger">create, read, update and delete</span> their
           entries on the website.</dd>
         <br>
         <img src="{% static 'cadmus/post_view.png' %}"
         <br>
-        <dt>🖺 Rich text editor</dt>
+        <dt>&#8594; Rich text editor</dt>
         <dd>Users can format their entries with <span class="has-text-danger">various text styles, fonts and
             colors</span>.</dd>
         <br>
         <img src="{% static 'cadmus/update_entry.png' %}"></img>
         <br>
-        <dt>📅 Filter entries by datetime and tags</dt>
+        <dt>&#8594; Filter entries by datetime and tags</dt>
         <dd>Users can sort and organize their entries based on <span class="has-text-danger">date and tags</span>.</dd>
         <br>
-        <dt>⬇️ Download entries as PDF</dt>
+        <dt>&#8594; Download entries as PDF</dt>
         <dd>Users have the option to <span class="has-text-danger">save entries in a PDF format</span> for offline
           viewing.</dd>
         <br>
-        <dt>🕵🏽 Secure end-to-end encryption</dt>
+        <dt>&#8594; Secure end-to-end encryption</dt>
         <dd>All data is encrypted from the moment it is entered until it reaches its destination, ensuring <span
             class="has-text-danger">maximum security and privacy</span>.</dd>
       </dl>

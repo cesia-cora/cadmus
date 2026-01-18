@@ -17,7 +17,7 @@ html {
 
 body {
 	background-color: whitesmoke;
-	font-family: 'PT Serif', serif;
+	font-family: 'Nunito', sans-serif;
 	font-size: 20px;
 	overflow: auto;
 }
@@ -46,7 +46,7 @@ body {
 	margin: 10px 30px;
 	background: whitesmoke;
 	font-size: 14px;
-	font-family: 'Consolas', monospace;
+	font-family: 'Nunito', sans-serif;
 	/* border: 1px solid black; */
 }
 
@@ -98,17 +98,12 @@ body {
 }
 
 .container-create {
-	display: flex;
+	display: block;
 	flex-direction: row;
 	justify-content: flex-start;
 	align-items: center;
-	margin: 0 0 10% 20%;
+	margin: 0 10% 10% 10%;
 	gap: 15px;
-}
-
-.textarea {
-	width: 20px;
-	margin: 2% 0 2% 0;
 }
 
 .content {
@@ -304,7 +299,7 @@ footer {
 @media (prefers-color-scheme: dark) {
 
 	body {
-		background-color: #141414;
+		background-color: #1f1e1e;
 		color: whitesmoke;
 	}
 

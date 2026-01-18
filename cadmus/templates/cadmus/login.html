@@ -20,6 +20,7 @@ Log in | Cadmus - Personal Diary
   {% endif %}
 
   <div class="has-text-centered is-size-2" style="margin-top:10%">Login</div>
+
   <br>
   <div class="authentication">
     <form action="{% url 'cadmus:login' %}" method="POST">
@@ -32,5 +33,7 @@ Log in | Cadmus - Personal Diary
     </form>
     <img src="{% static 'cadmus/casual-life-3d-girl-with-coffee.png' %}" width="300">
   </div>
+  <br><div class="has-text-centered">Forgot your password? <a href="">Reset your password</a></div>
+  <br><div class="has-text-centered">Don't have an account yet? <a href="{% url 'cadmus:register' %}">Register</a></div>
 </div>
 {% endblock %}

@@ -3,7 +3,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.dates import MonthArchiveView, YearArchiveView
 from django.views.generic import ListView
 from django.db.models import Q
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.urls import reverse
 from django.db import IntegrityError
 from django.core.paginator import Paginator
@@ -140,13 +140,7 @@ def create_entry(request):
 		if entry_form.is_valid():
 
 			new_entry = entry_form.save(commit=False)
-			new_entry.content = new_entry.content
 			new_entry.creator = request.user
-			encrypted_content = encrypt_text(new_entry.content)
-			
-			if encrypted_content:
-				new_entry.content = encrypted_content
-				
 			new_entry.save()
 
 		return HttpResponseRedirect(reverse("cadmus:index"))
@@ -200,7 +194,7 @@ def download_entry(request, slug):
 	
 	p.setFillColorRGB(0.078125, 0.078125, 0.078125)
 	p.setFont('Helvetica', 11)
-	content_entry = f'{entry.content}'
+	content_entry = f'{entry.decrypted_content}'
 	content = strip_tags(content_entry)
 	paragraphs = content.split('\n\n')
 	line_height = 10
@@ -238,15 +232,14 @@ def download_entry(request, slug):
 def edit_entry(request, slug):
 
 	entry = Entry.objects.get(slug=slug)
+	entry.content = entry.decrypted_content
 	form = EntryForm(instance=entry)
 
 	if request.method == "POST":
 		form = EntryForm(request.POST, instance=entry)
 
 		if form.is_valid():
-
 			form.save()
-
 			return HttpResponseRedirect(reverse("cadmus:entry", args=[slug]))
 
 		else:
@@ -334,3 +327,22 @@ def day_entries(request, year, month, day):
 		'entries': entries,
 		'date': day_date
 	})
+
+def password_reset(request):
+
+	p_form = PasswordChangeForm(request.user, request.POST)
+
+	if request.method == "POST":
+				
+		if p_form.is_valid():
+			new_password = form.cleaned_data["new_password1"]
+			user = request.user
+			user.set_password(new_password)
+			user.save()
+			update_session_auth_hash(request, user)
+			return redirect("cadmus:index")
+		else:
+			p_form = PasswordChangeForm(request.user)
+
+	return render(request, "cadmus/registration/password_reset_form.html", {
+	"form": p_form})

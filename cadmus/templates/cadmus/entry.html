@@ -32,7 +32,7 @@
       </div>
 
       <div class="content">
-        {{ entry.content|safe|linebreaks }}
+        {{ entry.decrypted_content|safe|linebreaks }}
         <br>
         <footer class="card-footer">
           <a class="button is-link is-light" href="{% url 'cadmus:edit' entry.slug %}">Edit</a>
