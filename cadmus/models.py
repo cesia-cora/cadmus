@@ -2,7 +2,6 @@ from tabnanny import verbose
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
-from ckeditor.fields import RichTextField
 from django_ckeditor_5.fields import CKEditor5Field
 from django.conf import settings
 from cryptography.fernet import Fernet, InvalidToken
@@ -26,6 +25,13 @@ class Entry(models.Model):
 	initial_time = models.DateTimeField(default=timezone.now, blank=True, null=False, verbose_name="Initial Time")
 	last_modified = models.DateTimeField(auto_now=True, null=True, verbose_name="Last Modified")
 	creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+	class Meta:
+		indexes = [
+			models.Index(fields=['initial_time']),
+			models.Index(fields=['slug']),
+			models.Index(fields=['creator']),
+		]
 
 	def __str__(self):
 		return f"{self.title}"

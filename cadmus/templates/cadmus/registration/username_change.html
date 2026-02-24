@@ -1,0 +1,26 @@
+{% extends 'cadmus/layout.html' %}
+{% load static %}
+
+    {% block title %}
+        Change Username | Cadmus - Personal Diary
+    {% endblock %}
+
+{% block body %}
+
+<a class="button is-danger is-light" style="margin-left:2%;margin-top:1%;" href="{% url 'cadmus:settings' %}">&#8592 Back to settings</a>
+
+<h1 class="title is-3 has-text-centered">Settings</h1>
+
+    <div style="display:flex; justify-content:center;">
+        
+        
+        <form action="{% url 'cadmus:username_change' %}" method="POST" style="width: 20%;">
+            {% csrf_token %}
+
+            {{ form }}
+            <br>
+            <input type="submit" class="button is-warning" value="Change username">
+        </form>
+    </div>
+<br>
+{% endblock %}

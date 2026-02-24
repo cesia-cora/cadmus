@@ -1,11 +1,14 @@
-from django.shortcuts import render
+from io import BytesIO
+from django.shortcuts import redirect, render
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.dates import MonthArchiveView, YearArchiveView
 from django.views.generic import ListView
+from django.views.decorators.cache import cache_page
+from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
 from django.urls import reverse
-from django.db import IntegrityError
+from django.db import IntegrityError, transaction
 from django.core.paginator import Paginator
 from django.utils import timezone
 from django.conf import settings
@@ -13,18 +16,23 @@ from datetime import date, datetime, timedelta
 from django.utils.html import strip_tags
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter
+from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
+from reportlab.platypus import PageBreak
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib import colors
+from reportlab.lib.units import inch
 from calendar import monthcalendar
 from .models import *
 from .forms import *
 
 class EntryMonthArchiveView(MonthArchiveView):
-    queryset = Entry.objects.all()
+    queryset = Entry.objects.select_related('creator').all()
     date_field = "initial_time"
     make_object_list = True
     allow_future = True
 
 class EntryYearArchiveView(YearArchiveView):
-    queryset = Entry.objects.all()
+    queryset = Entry.objects.select_related('creator').all()
     date_field = "initial_time"
     make_object_list = True
     allow_future = True
@@ -33,6 +41,7 @@ class SearchResultsView(ListView):
 	model = Entry
 	template_name = 'cadmus/search_results.html'
 	
+	@method_decorator(cache_page(60 * 5))
 	def get_queryset(self):
 		query = self.request.GET.get("q")
 		date_query = self.request.GET.get("date")
@@ -44,6 +53,8 @@ class SearchResultsView(ListView):
 				Q(title__icontains=query) | Q(content__icontains=query)
 			)
 
+		object_list = object_list.select_related('creator')
+
 		if date_query:
 			try:
 				date = datetime.strptime(date_query, '%Y-%m-%d')
@@ -53,9 +64,10 @@ class SearchResultsView(ListView):
 
 		return object_list
 
+@cache_page(60 * 5)
 def index(request):
 	# add [:number] to limit entries
-	entries = Entry.objects.all().order_by('-initial_time')
+	entries = Entry.objects.select_related('creator').all().order_by('-initial_time')
 	paginator = Paginator(entries, 5)
 
 	page_number = request.GET.get('page')
@@ -77,6 +89,9 @@ def index(request):
 # 		"page_obj": page_obj,
 # 	})
 
+
+def settings(request):
+	return render(request, "cadmus/settings.html")
 
 def login_view(request):
 	if request.method == "POST":
@@ -117,15 +132,16 @@ def register(request):
 			})
 
 		try:
-			user = User.objects.create_user(username, email, password)  # type: ignore
-			user.save()
+			with transaction.atomic():
+				user = User.objects.create_user(username, email, password)  # type: ignore
+				user.save()
+				login(request, user)
 
 		except IntegrityError:
 			return render(request, "cadmus/register.html", {
 					"message": "Username already taken."
 			})
 
-		login(request, user)
 		return HttpResponseRedirect(reverse("cadmus:index"))
 
 	else:
@@ -138,10 +154,11 @@ def create_entry(request):
 	if request.method == "POST":
 
 		if entry_form.is_valid():
+			with transaction.atomic():
 
-			new_entry = entry_form.save(commit=False)
-			new_entry.creator = request.user
-			new_entry.save()
+				new_entry = entry_form.save(commit=False)
+				new_entry.creator = request.user
+				new_entry.save()
 
 		return HttpResponseRedirect(reverse("cadmus:index"))
 
@@ -152,8 +169,8 @@ def create_entry(request):
 
 def entry(request, slug):
 
-	entry = Entry.objects.get(slug=slug)
-	entry.content = entry.content
+	entry = Entry.objects.select_related('creator').get(slug=slug)
+	entry.content = entry.decrypted_content
 
 	return render(request, "cadmus/entry.html", {
 		"entry": entry
@@ -161,89 +178,78 @@ def entry(request, slug):
 
 def download_entry(request, slug):
 
-	entry = Entry.objects.get(slug=slug)
+    entry = Entry.objects.select_related('creator').get(slug=slug)
 
-	# pdf generator
-	filename = f'{entry.slug}'
-	response = HttpResponse(content_type='application/pdf')
-	response['Content-Disposition'] = f'attachment; filename="{filename}".pdf"'
+    buffer = BytesIO()
+    doc = SimpleDocTemplate(buffer, pagesize=letter,
+                            rightMargin=72, leftMargin=72,
+                            topMargin=72, bottomMargin=72)
 
-	# create canvas object and generate pdf content
-	p = canvas.Canvas(response, pagesize=letter)
+    styles = getSampleStyleSheet()
+    styles.add(ParagraphStyle(name='DocTitle', parent=styles['Heading1'],
+                              fontName='Helvetica-Bold', fontSize=18, spaceAfter=12))
+    styles.add(ParagraphStyle(name='Meta', parent=styles['Normal'],
+                              fontSize=9, textColor=colors.grey, spaceAfter=8))
+    styles.add(ParagraphStyle(name='Body', parent=styles['Normal'],
+                              fontSize=11, leading=14))
 
-	y = 700
-	page_width, page_height = letter
+    if entry.initial_time:
+        created_at = entry.initial_time.strftime('%B %d %Y %H:%M')
+    else:
+        created_at = "N/A"
+    if entry.last_modified:
+        last_updated = entry.last_modified.strftime('%B %d %Y %H:%M')
+    else:
+        last_updated = "N/A"
 
-	p.setFillColorRGB(0.29296875, 0.453125, 0.609375)
-	title_height = 40
-	p.setFont('Helvetica', 20)
-	p.drawString(60, y + title_height, f'{entry.title}')
+    elements = []
+    elements.append(Paragraph(entry.title or "Untitled", styles['DocTitle']))
+    elements.append(Paragraph(f'Created: {created_at} — Last updated: {last_updated}', styles['Meta']))
 
-	p.setFillColorRGB(0.078125, 0.078125, 0.078125)
-	p.setFont("Helvetica", 10)
-	if entry.initial_time:
-		created_at = entry.initial_time.strftime('%B %d %Y %H:%M')
-	else:
-		created_at = "N/A"
-	if entry.last_modified:
-		last_updated = entry.last_modified.strftime('%B %d %Y %H:%M')
-	else:
-		last_updated = "N/A"
-	p.drawString(60, y + title_height - 30, f'Created at: {created_at}')
-	p.drawString(60, y + title_height - 50, f'Last updated: {last_updated}')
-	
-	p.setFillColorRGB(0.078125, 0.078125, 0.078125)
-	p.setFont('Helvetica', 11)
-	content_entry = f'{entry.decrypted_content}'
-	content = strip_tags(content_entry)
-	paragraphs = content.split('\n\n')
-	line_height = 10
-	line_spacing = 10
-	max_line_width = page_width - 120
+    content = entry.decrypted_content
+    paragraphs = [p.strip() for p in content.split('\n\n') if p.strip()]
 
-	# Adjust the starting position of the content to avoid overlap
-	y = y + title_height - 90
+    for para in paragraphs:
+        para_html = para.replace('\n', '<br/>')
+        elements.append(Paragraph(para_html, styles['Body']))
+        elements.append(Spacer(1, 6))
 
-	for i, paragraph in enumerate(paragraphs):
-		lines = paragraph.split('\n')
-		current_y = y - i * (line_height + line_spacing)
-		for line in lines:
-			line = line.strip()
-			if line:
-				words = line.split()
-				current_line = ""
+    def header_footer(canvas, doc):
+        canvas.saveState()
+        canvas.setFont('Helvetica', 9)
+        canvas.setFillColorRGB(0.2, 0.2, 0.2)
+        width, height = letter
+        canvas.drawString(doc.leftMargin, height - 36, "Cadmus — Personal Diary")
+        canvas.drawRightString(width - doc.rightMargin, 36, f"Page {doc.page}")
+        canvas.restoreState()
 
-				for word in words:
-					if p.stringWidth(current_line + " " + word) < max_line_width:
-						current_line += " " + word
-					else:
-						p.drawString(60, current_y, current_line.strip())
-						current_line = word
-						current_y -= line_height + line_spacing
-				if current_line:
-					p.drawString(60, current_y, current_line.strip())
-					current_y -= line_height + line_spacing
+    doc.build(elements, onFirstPage=header_footer, onLaterPages=header_footer)
 
-	p.showPage()
-	p.save()
+    pdf = buffer.getvalue()
+    buffer.close()
 
-	return response
+    response = HttpResponse(content_type='application/pdf')
+    response['Content-Disposition'] = f'attachment; filename=\"{entry.slug}.pdf\"'
+    response.write(pdf)
+
+    return response
 
 def edit_entry(request, slug):
 
-	entry = Entry.objects.get(slug=slug)
+	entry = Entry.objects.select_related('creator').get(slug=slug)
 	entry.content = entry.decrypted_content
 	form = EntryForm(instance=entry)
 
 	if request.method == "POST":
-		form = EntryForm(request.POST, instance=entry)
+		with transaction.atomic():
+			form = EntryForm(request.POST, instance=entry)
 
-		if form.is_valid():
-			form.save()
-			return HttpResponseRedirect(reverse("cadmus:entry", args=[slug]))
+			if form.is_valid():
+				form.save()
+				return HttpResponseRedirect(reverse("cadmus:entry", args=[slug]))
 
-		else:
-			print(form.errors)
+			else:
+				print(form.errors)
 
 	return render(request, "cadmus/update_entry.html", {
 		"entry": entry,
@@ -252,14 +258,16 @@ def edit_entry(request, slug):
 
 def delete_entry(request, slug):
 
-	Entry.objects.get(slug=slug).delete()
+	with transaction.atomic():
+		entry = Entry.objects.select_for_update().get(slug=slug)
+		entry.delete()
 
 	return HttpResponseRedirect(reverse("cadmus:index"))
 
 def archive_month(request):
-
 	return render(request, "cadmus/entry_archive_month.html")
 
+@cache_page(60 * 5)
 def calendar(request):
 	today = date.today()
 
@@ -281,7 +289,7 @@ def calendar(request):
 	start_date = date(year, month, 1)
 	end_date = start_date + timedelta(days=31)
 	end_date = end_date.replace(day=1) - timedelta(days=1)
-	entries = Entry.objects.filter(initial_time__date__range=[start_date, end_date])
+	entries = Entry.objects.filter(initial_time__date__range=[start_date, end_date]).select_related('creator').only('id', 'initial_time', 'slug', 'title')
 
 	entry_dates = {}
 
@@ -313,14 +321,13 @@ def calendar(request):
 	})
 
 def day_entries(request, year, month, day):
-	# rango desde 00:00:00 del día hasta antes de 00:00:00 del día siguiente
 	start = datetime(year, month, day, 0, 0, 0)
-	# hacer aware si el proyecto usa zonas horarias
+
 	if settings.USE_TZ:
 		start = timezone.make_aware(start, timezone.get_current_timezone())
 	end = start + timedelta(days=1)
 
-	entries = Entry.objects.filter(initial_time__gte=start, initial_time__lt=end).order_by('-initial_time')
+	entries = Entry.objects.filter(initial_time__gte=start, initial_time__lt=end).select_related('creator').order_by('-initial_time')
 	day_date = start.date()
 
 	return render(request, 'cadmus/entry_archive_date.html', {
@@ -328,21 +335,42 @@ def day_entries(request, year, month, day):
 		'date': day_date
 	})
 
+
+def username_change(request):
+	if request.method == "POST":
+		with transaction.atomic():
+			user = User.objects.select_for_update().get(id=request.user.id)
+			form = UsernameChangeForm(user, request.POST)
+
+			if form.is_valid():
+				new_username = form.cleaned_data["username"]
+				user = request.user
+				user.username = new_username
+				user.save()
+				return redirect("cadmus:index")
+
+	else:
+		form = UsernameChangeForm(request.user, initial={"username": request.user.username})
+	return render(request, "cadmus/registration/username_change.html", {
+		"form": form})
+
 def password_reset(request):
 
 	p_form = PasswordChangeForm(request.user, request.POST)
 
 	if request.method == "POST":
-				
-		if p_form.is_valid():
-			new_password = form.cleaned_data["new_password1"]
-			user = request.user
-			user.set_password(new_password)
-			user.save()
-			update_session_auth_hash(request, user)
-			return redirect("cadmus:index")
-		else:
-			p_form = PasswordChangeForm(request.user)
+		with transaction.atomic():
+			user = User.objects.select_for_update().get(id=request.user.id)
+			
+			if p_form.is_valid():
+				new_password = p_form.cleaned_data["new_password1"]
+				user = request.user
+				user.set_password(new_password)
+				user.save()
+				update_session_auth_hash(request, user)
+				return redirect("cadmus:index")
+	else:
+		p_form = PasswordChangeForm(request.user)
 
 	return render(request, "cadmus/registration/password_reset_form.html", {
 	"form": p_form})

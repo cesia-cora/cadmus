@@ -1,6 +1,7 @@
 from django import forms
 from django.forms import ModelForm
 from .models import *
+from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django.utils.translation import gettext_lazy
 from django_ckeditor_5.widgets import CKEditor5Widget
@@ -19,6 +20,35 @@ class EntryForm(ModelForm):
 		if Entry.objects.exclude(id=self.instance.id).filter(slug=slug).exists():
 			raise forms.ValidationError('This slug already exists. Please, type another one.')
 		return slug
+
+class UsernameChangeForm(forms.Form):
+	def __init__(self, user, *args, **kwargs):
+		super().__init__(*args, **kwargs)
+		self.user = user
+
+	username = forms.CharField(
+		label="New username",
+		max_length=150,
+		error_messages={'required': ''},
+		widget=forms.TextInput(
+			attrs={
+				'placeholder': 'New username',
+				'class': 'input is-normal',
+			}
+		),
+	)
+
+def clean_username(self):
+	User = get_user_model()
+	username = self.cleaned_data.get("username")
+
+	if username == self.user.username:
+		raise forms.ValidationError("You are already using this username.")
+
+	if User.objects.exclude(pk=self.user.pk).filter(username=username).exists():
+		raise forms.ValidationError("This username is already taken.")
+		
+	return username
 
 class PasswordChangeForm(forms.Form):
 	def __init__(self, user, *args, **kwargs):

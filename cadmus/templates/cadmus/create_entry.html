@@ -11,6 +11,8 @@
 
 <div class="title is-4 has-text-centered title-template is-uppercase">Create an entry</div>
 
+<a class="button is-danger is-light" style="margin-left:2%;margin-top:1%;" href="{% url 'cadmus:index' %}">&#8592 Back to entries</a>
+
 <div class="container-create">
 <form action="" method="POST">
     {% csrf_token %}

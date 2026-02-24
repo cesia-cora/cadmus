@@ -12,15 +12,17 @@ This is a Django project using the Model-Template-View architectural pattern.
 <br>The View handles the logic of what data to display.
 
 ### Features:
-- User authentication system
+- User authentication and authorization system
 - Post, view, edit and delete entries
-- Encrypted entries (end-to-end)
+- Encrypted entries using a 128-bit symmetric key
 - Calendar integration
 - Filter entries by date
 - Rich text formatting
 - Search bar
 - Convert to and download entries as PDF
 - Cute 3D images from [Ouch!][def3]
+- Unit tests
+- Integration tests
 
 ### Requirements:
 - Python 3.x

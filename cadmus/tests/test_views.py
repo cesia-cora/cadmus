@@ -1,6 +1,25 @@
-from django.test import TestCase, Client
+from unittest import patch, Mock
+from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
+from django.http import HttpResponse
+from django.contrib.sessions.middleware import SessionMiddleware
+from django.contrib.messages.middleware import MessageMiddleware
+from django.contrib.auth import get_user_model
+from django.contrib.auth.models import AnonymousUser
 from cadmus.models import *
+from cadmus import views
+
+User = get_user_model()
+
+def make_request(method='post', path='/', data=None, user=None):
+    rf = RequestFactory()
+    req = getattr(rf, method)(path, data=data or {})
+    req.user = user or AnonymousUser()
+
+    SessionMiddleware(lambda r: HttpResponse()).process_request(req)
+    req.session.save()
+    MessageMiddleware(lambda r: HttpResponse()).process_request(req)
+    return req
 
 class TestViews(TestCase):
     
@@ -68,3 +87,27 @@ class TestViews(TestCase):
     def test_delete_view(self):
         response = self.client.get(self.delete_view)
         self.assertEqual(response.status_code, 302)
+
+class TransactionAndLockingTests(TestCase):
+
+    def setUp(self):
+        self.user = User.objects.create(username="tester", email="t@e.com", password="pass123")
+        self.entry = Entry.objects.create(title="T", slug="t-slug", content="c", creator=self.user)
+
+    def test_edit_entry_uses_select_for_update(self):
+        req = make_request('post', f'/entries/{self.entry.slug}/edit', data={'title': 'New', 'content': 'new'}, user=self.user)
+        with patch('cadmus.views.Entry.objects.select_for_update') as mock_select:
+            mock_qs = Mock()
+            mock_qs.get.return_value = self.entry
+            mock_select.return_value = mock_qs
+            resp = views.edit_entry(req, self.entry.slug)
+            assert mock_select.called
+
+    def test_delete_entry_uses_select_for_update(self):
+        req = make_request('post', f'/entries/{self.entry.slug}/delete', user=self.user)
+        with patch('cadmus.views.Entry.objects.select_for_update') as mock_select:
+            mock_qs = Mock()
+            mock_qs.get.return_value = self.entry
+            mock_select.return_value = mock_qs
+            resp = views.delete_entry(req, self.entry.slug)
+            assert mock_select.called

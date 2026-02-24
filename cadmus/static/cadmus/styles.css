@@ -40,6 +40,8 @@ body {
 	background-color: whitesmoke;
 	text-align: center;
 	border-top: 1px solid black;
+	padding: 3rem 1rem;
+	margin-top: 3rem;
 }
 
 .navbar {
@@ -58,12 +60,16 @@ body {
 	background: whitesmoke;
 	border: 1px solid black;
 	border-color: #6c757d;
+	border-radius: 12px;
+	box-shadow: 0 4px 14px rgba(0,0,0,0.08);
 	margin: 10px;
 	width: 30%;
+	word-wrap: break-word;
 }
 
 .card2:hover {
 	transform: scale(1.01);
+	box-shadow: 0 12px 24px rgba(0,0,0,0.12);
 }
 
 .card2 {
@@ -296,6 +302,64 @@ footer {
 	color: #6b6b6b;
 }
 
+.settings-list {
+	background: #fff;
+	border-radius: 12px;
+	box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+	overflow: hidden;
+	border: 1px solid rgba(0,0,0,0.06);
+}
+
+.settings-item {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+	padding: 1rem 1.25rem;
+	text-decoration: none;
+	color: inherit;
+	border-bottom: 1px solid rgba(0,0,0,0.06);
+	transition: background 0.2s;
+}
+
+.settings-item:last-child {
+	border-bottom: none;
+}
+
+.settings-item:hover {
+	background: rgba(0,0,0,0.03);
+}
+
+.settings-item-disabled {
+	opacity: 0.7;
+	cursor: default;
+}
+
+.settings-item-arrow {
+	opacity: 0.5;
+}
+
+.settings-item-muted {
+	font-size: 0.9rem;
+	color: #888;
+}
+
+/* Django CKEditor 5 */
+
+.django_ckeditor_5 + .ck.ck-editor {
+	--ck-color-toolbar-background: #f0f4f8;
+	--ck-color-toolbar-border: #c5d1de;
+}
+
+.django_ckeditor_5 + .ck.ck-editor .ck.ck-content {
+	background-color: transparent;
+	color: #1a1a1a;
+}
+
+.django_ckeditor_5 + .ck.ck-editor .ck.ck-toolbar {
+	background: transparent;
+	border-color: #c5d1de;
+}
+
 @media (prefers-color-scheme: dark) {
 
 	body {
@@ -352,10 +416,13 @@ footer {
 		margin-top: 2%;
 	}
 
-	.card,
-	.title {
+	.card, .card .title {
 		background-color: #141414;
 		;
+		color: rgb(179, 179, 179);
+	}
+
+	.title {
 		color: rgb(179, 179, 179);
 	}
 
@@ -410,5 +477,115 @@ footer {
 		color: #0f172a;
 		padding: 12px 8px;
 		border-bottom: 2px solid rgba(0,0,0,0.06);
+	}
+
+	.input, .self-input-post {
+		background: transparent;
+		color: whitesmoke;
+	}
+
+	.settings-list {
+		background: #1f1e1e;
+		border-radius: 12px;
+		box-shadow: 0 4px 14px rgba(0,0,0,0.06);
+		overflow: hidden;
+		border: 1px solid rgba(0,0,0,0.06);
+	}
+	
+	.settings-item {
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		padding: 1rem 1.25rem;
+		text-decoration: none;
+		color: inherit;
+		border-bottom: 1px solid rgba(0,0,0,0.06);
+		transition: background 0.2s;
+	}
+	
+	.settings-item:last-child {
+		border-bottom: none;
+	}
+	
+	.settings-item:hover {
+		background: rgba(239, 239, 239, 0.12);
+	}
+	
+	.settings-item-disabled {
+		opacity: 0.7;
+		cursor: default;
+	}
+	
+	.settings-item-arrow {
+		opacity: 0.5;
+	}
+	
+	.settings-item-muted {
+		font-size: 0.9rem;
+		color: #888;
+	}
+
+	.django_ckeditor_5 + .ck.ck-editor {
+		--ck-custom-foreground: hsl(255, 3%, 18%);
+		--ck-custom-border: hsl(300, 1%, 22%);
+		--ck-custom-white: hsl(0, 0%, 100%);
+
+		--ck-color-panel-background: #2d2d2d;
+		--ck-color-panel-border: #444;
+		--ck-color-button-on-background: hsl(255, 4%, 20%);
+		--ck-color-button-on-hover-background: hsl(255, 4%, 28%);
+		--ck-color-button-on-text: #e0e0e0;
+
+		--ck-content-font-color: var(--ck-custom-white);
+
+		--ck-color-base-background: hsl(270, 1%, 29%);
+		--ck-color-base-border: hsl(240, 4%, 24%);
+
+		--ck-color-focus-border: hsl(0, 0%, 100%);
+		--ck-color-text: hsl(0, 0%, 98%);
+		--ck-color-shadow-drop: hsla(0, 0%, 0%, 0.2);
+		--ck-color-shadow-inner: hsla(0, 0%, 0%, 0.1);
+
+		--ck-color-button-default-hover-background: hsl(270, 1%, 22%);
+		--ck-color-button-default-active-background: hsl(270, 2%, 20%);
+		--ck-color-button-default-active-shadow: hsl(270, 2%, 23%);
+
+		--ck-color-button-on-background: var(--ck-custom-foreground);
+		--ck-color-button-on-hover-background: hsl(255, 4%, 16%);
+		--ck-color-button-on-active-background: hsl(255, 4%, 14%);
+		--ck-color-button-on-active-shadow: hsl(240, 3%, 19%);
+		--ck-color-button-on-disabled-background: var(--ck-custom-foreground);
+
+		--ck-color-button-action-background: hsl(168, 76%, 42%);
+		--ck-color-button-action-hover-background: hsl(168, 76%, 38%);
+		--ck-color-button-action-active-background: hsl(168, 76%, 36%);
+		--ck-color-button-action-active-shadow: hsl(168, 75%, 34%);
+		--ck-color-button-action-disabled-background: hsl(168, 76%, 42%);
+		--ck-color-button-action-text: var(--ck-custom-white);
+
+		--ck-color-button-save: hsl(120, 100%, 46%);
+		--ck-color-button-cancel: hsl(15, 100%, 56%);
+	}
+
+	.django_ckeditor_5 + .ck.ck-editor .ck.ck-content {
+		background-color: transparent;
+		color: whitesmoke;
+		font-family: 'Cormorant Garamont';
+	}
+	
+	.django_ckeditor_5 + .ck.ck-editor .ck.ck-toolbar {
+		background: transparent;
+		border-color: #c5d1de;
+	}
+
+	.django_ckeditor_5 + .ck.ck-editor .ck.ck-content.ck-focused,
+	.django_ckeditor_5 + .ck.ck-editor .ck-editor__editable.ck-focused {
+		outline: none;
+		border-color: rgb(20, 20, 20);
+		box-shadow: 0 0 0 0.5px #878787;
+	}
+
+	.ck.ck-list-styles-list, ul.ck.ck-list, li.ck.ck-list__item, .ck-list-item-button {
+		background: #141414 !important;
 	}
 }

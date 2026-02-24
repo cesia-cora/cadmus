@@ -26,7 +26,7 @@
               <span>{{ entry.last_modified|date:'Y' }}</span>
               <span>{{ entry.last_modified|date:'| h:i a'}}</span>
               {% else %}
-              <br><span><i>Not modified yet</i></span>
+              <br><span><i></i></span>
               {% endif %}
               <hr>
               <p class="title is-4">{{ entry.title }}</p>
@@ -95,12 +95,9 @@
         <dd>Users have the option to <span class="has-text-danger">save entries in a PDF format</span> for offline
           viewing.</dd>
         <br>
-        <dt>&#8594; Secure end-to-end encryption</dt>
-        <dd>All data is encrypted from the moment it is entered until it reaches its destination, ensuring <span
-            class="has-text-danger">maximum security and privacy</span>.</dd>
       </dl>
       <br>
-      <a class="button is-light" href="{% url 'cadmus:register' %}">Register to start making your entries</a>
+      <a class="button is-light is-size-4" href="{% url 'cadmus:register' %}">Register to start making your entries</a>
     </div>
   </div>
   {% endif %}

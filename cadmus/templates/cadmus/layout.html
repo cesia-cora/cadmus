@@ -65,6 +65,12 @@
 			</div>
 			{% endif %}
 
+			{% if request.user.is_authenticated %}
+			<div class="navbar-item">
+				<a class="button is-light" href="{% url 'cadmus:settings' %}">Settings</a>
+			</div>
+			{% endif %}
+
 			<div class="navbar-item">
 			  <div class="buttons">
 				{% if request.user.is_authenticated %}
@@ -78,12 +84,6 @@
 				{% endif %}
 			  </div>
 			</div>
-
-			{% if request.user.is_authenticated %}
-			<div class="navbar-item">
-				<a>Settings</a>
-			</div>
-			{% endif %}
 		  </div>
 		</div>
 	  </nav>
