@@ -1,5 +1,5 @@
 from io import BytesIO
-from django.shortcuts import redirect, render
+from django.shortcuts import redirect, render, get_object_or_404
 from django.http import HttpResponse, HttpResponseRedirect
 from django.views.generic.dates import MonthArchiveView, YearArchiveView
 from django.views.generic import ListView
@@ -7,6 +7,7 @@ from django.views.decorators.cache import cache_page
 from django.utils.decorators import method_decorator
 from django.db.models import Q
 from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth.decorators import login_required
 from django.urls import reverse
 from django.db import IntegrityError, transaction
 from django.core.paginator import Paginator
@@ -53,7 +54,7 @@ class SearchResultsView(ListView):
 				Q(title__icontains=query) | Q(content__icontains=query)
 			)
 
-		object_list = object_list.select_related('creator')
+		object_list = object_list.filter(creator=self.request.user).select_related('creator')
 
 		if date_query:
 			try:
@@ -67,7 +68,7 @@ class SearchResultsView(ListView):
 @cache_page(60 * 5)
 def index(request):
 	# add [:number] to limit entries
-	entries = Entry.objects.select_related('creator').all().order_by('-initial_time')
+	entries = get_object_or_404(Entry.objects.filter(creator=request.user).select_related('creator').all().order_by('-initial_time'))
 	paginator = Paginator(entries, 5)
 
 	page_number = request.GET.get('page')
@@ -169,7 +170,7 @@ def create_entry(request):
 
 def entry(request, slug):
 
-	entry = Entry.objects.select_related('creator').get(slug=slug)
+	entry = get_object_or_404(Entry.objects.select_related('creator').get(slug=slug), creator=request.user)
 	entry.content = entry.decrypted_content
 
 	return render(request, "cadmus/entry.html", {
@@ -236,7 +237,7 @@ def download_entry(request, slug):
 
 def edit_entry(request, slug):
 
-	entry = Entry.objects.select_related('creator').get(slug=slug)
+	entry = get_object_or_404(Entry.objects.select_related('creator').get(slug=slug), creator=request.user)
 	entry.content = entry.decrypted_content
 	form = EntryForm(instance=entry)
 
@@ -259,7 +260,7 @@ def edit_entry(request, slug):
 def delete_entry(request, slug):
 
 	with transaction.atomic():
-		entry = Entry.objects.select_for_update().get(slug=slug)
+		entry = get_object_or_404(Entry.objects.select_for_update().get(slug=slug), creator=request.user)
 		entry.delete()
 
 	return HttpResponseRedirect(reverse("cadmus:index"))
@@ -289,7 +290,7 @@ def calendar(request):
 	start_date = date(year, month, 1)
 	end_date = start_date + timedelta(days=31)
 	end_date = end_date.replace(day=1) - timedelta(days=1)
-	entries = Entry.objects.filter(initial_time__date__range=[start_date, end_date]).select_related('creator').only('id', 'initial_time', 'slug', 'title')
+	entries = get_object_or_404(Entry.objects.filter(initial_time__date__range=[start_date, end_date], creator=request.user).select_related('creator').only('id', 'initial_time', 'slug', 'title'))
 
 	entry_dates = {}
 
@@ -327,7 +328,7 @@ def day_entries(request, year, month, day):
 		start = timezone.make_aware(start, timezone.get_current_timezone())
 	end = start + timedelta(days=1)
 
-	entries = Entry.objects.filter(initial_time__gte=start, initial_time__lt=end).select_related('creator').order_by('-initial_time')
+	entries = get_object_or_404(Entry.objects.filter(initial_time__gte=start, initial_time__lt=end, creator=request.user).select_related('creator').order_by('-initial_time'))
 	day_date = start.date()
 
 	return render(request, 'cadmus/entry_archive_date.html', {
