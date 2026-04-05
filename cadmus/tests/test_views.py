@@ -1,4 +1,5 @@
 from unittest import patch, Mock
+from io import BytesIO
 from django.test import TestCase, Client, RequestFactory
 from django.urls import reverse
 from django.http import HttpResponse
@@ -96,7 +97,7 @@ class TransactionAndLockingTests(TestCase):
 
     def test_edit_entry_uses_select_for_update(self):
         req = make_request('post', f'/entries/{self.entry.slug}/edit', data={'title': 'New', 'content': 'new'}, user=self.user)
-        with patch('cadmus.views.Entry.objects.select_for_update') as mock_select:
+        with patch('cadmus.views.Entry.objects.select_related') as mock_select:
             mock_qs = Mock()
             mock_qs.get.return_value = self.entry
             mock_select.return_value = mock_qs
@@ -111,3 +112,26 @@ class TransactionAndLockingTests(TestCase):
             mock_select.return_value = mock_qs
             resp = views.delete_entry(req, self.entry.slug)
             assert mock_select.called
+
+    def test_download_entry_returns_pdf(self):
+        resp = None
+        with patch('cadmus.views.generate_entry_pdf') as mock_pdf:
+            mock_pdf.return_value = BytesIO(b'%PDF-1.4 test')
+            resp = self.client.get(reverse('cadmus:download', args=[self.entry.slug]))
+        self.assertEqual(resp.status_code, 200)
+        self.assertEqual(resp['Content-Type'], 'application/pdf')
+        self.assertIn('attachment', resp['Content-Disposition'])
+
+    def test_username_change_calls_service(self):
+        with patch('cadmus.views.change_username') as mock_change:
+            resp = self.client.post(reverse('cadmus:username_change'), {'username': 'newuser'})
+        self.assertEqual(resp.status_code, 302)
+        mock_change.assert_called_once()
+
+    def test_password_reset_calls_service(self):
+        with patch('cadmus.views.change_user_password') as mock_pw:
+            resp = self.client.post(reverse('cadmus:password_reset'), {
+                'new_password1': 'newpass123', 'new_password2': 'newpass123'
+            })
+        self.assertEqual(resp.status_code, 302)
+        mock_pw.assert_called_once()

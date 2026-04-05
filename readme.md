@@ -6,10 +6,11 @@
 ## CADMUS | PERSONAL DIARY PROJECT
 Cadmus is a web application made to publish and view your entries, like a personal diary/journal.
 
-This is a Django project using the Model-Template-View architectural pattern.
-<br>The Model handles the business logic and interaction with the database.
-<br>The Template handles the presentation layer.
-<br>The View handles the logic of what data to display.
+This is a Django project using a layered architecture.
+<br>The Model handles the data persistence.
+<br>The Template handles the output format.
+<br>The View handles the logic of what data to display and calls the services.
+<br>The Service handles the business logic.
 
 ### Features:
 - User authentication and authorization system
