@@ -25,6 +25,11 @@
     {% if entry_form.slug.errors %}
         <div class="error">{{ entry_form.slug.errors }}</div>
     {% endif %}
+    <label class="label is-size-5">Tags:</label>
+    <p class="is-size-6">Choose existing tags.</p>
+    {{ entry_form.tags }}
+    <label class="label is-size-5">New tags:</label>
+    {{ entry_form.new_tags }}
     <label class="label is-size-5">Content:</label>
     <p class="is-size-6">No length limits.</p>
     {{ entry_form.content }}

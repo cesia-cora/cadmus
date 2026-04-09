@@ -12,6 +12,9 @@ class EntryAdmin(admin.ModelAdmin):
     list_display = ('title', 'creator', 'initial_time')
     readonly_fields = ('title', 'slug', 'creator', 'content', 'initial_time')
 
-admin.site.register(Entry, EntryAdmin)
+class TagAdmin(admin.ModelAdmin):
+    list_display = ('name', 'creator')
 
+admin.site.register(Entry, EntryAdmin)
+admin.site.register(Tag, TagAdmin)
 admin.site.register(User)

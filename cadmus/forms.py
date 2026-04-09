@@ -3,17 +3,30 @@ from django.forms import ModelForm
 from .models import *
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
-from django.utils.translation import gettext_lazy
 from django_ckeditor_5.widgets import CKEditor5Widget
 
 class EntryForm(ModelForm):
+	tags = forms.ModelMultipleChoiceField(
+        queryset=Tag.objects.none(),
+        required=False,
+        widget=forms.SelectMultiple(attrs={'class': 'select is-multiple'})
+    )
+	new_tags = forms.CharField(required=False, help_text='Comma-separated new tags', widget=forms.TextInput(attrs={'placeholder': 'tag1, tag2'}))
+
 	class Meta:
 		model = Entry
-		fields = ['title', 'slug', 'content', 'initial_time']
+		fields = ['title', 'slug', 'content', 'initial_time', 'tags']
 		widgets = {'title': forms.TextInput(attrs={'placeholder': 'Type your title here', 'class': 'input self-input-post', 'type': 'text'}),
 		'slug': forms.TextInput(attrs={'placeholder': 'Type something like "this-is-my-entry"', 'class': 'input self-input-post',}),
 		'content': CKEditor5Widget(attrs={'placeholder': 'Type your entry here', 'class': 'django_ckeditor_5'}, config_name='extends'),
-		'initial_time': forms.DateTimeInput(attrs={'class': 'input self-input-post'})}
+		'initial_time': forms.DateTimeInput(attrs={'class': 'input self-input-post', 'type': 'datetime-local'}),
+		}
+
+	def __init__(self, *args, **kwargs):
+		user = kwargs.pop('user', None)
+		super().__init__(*args, **kwargs)
+		if user:
+			self.fields['tags'].queryset = Tag.objects.filter(creator=user)
 	
 	def clean_slug(self):
 		slug = self.cleaned_data.get('slug')

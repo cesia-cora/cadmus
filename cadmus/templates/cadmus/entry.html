@@ -5,8 +5,9 @@
 
 {% if request.user.is_authenticated and entry.creator == request.user %}
 <div class="main">
-  
-  <a class="button is-danger is-light" style="margin-left:2%;margin-top:1%;" href="{% url 'cadmus:index' %}">&#8592 Back to entries</a>
+
+  <a class="button is-danger is-light" style="margin-left:2%;margin-top:1%;" href="{% url 'cadmus:index' %}">&#8592 Back
+    to entries</a>
 
   <article class="message is-warning">
     <div class="message-header">
@@ -28,8 +29,17 @@
         <div class="media-content">
           <p class="title is-3">{{ entry.title }}</p>
         </div>
-        <a class="button is-link is-warning" href="{% url 'cadmus:download_entry' slug=entry.slug %}"><img src="{% static 'cadmus/print.png' %}" width="25"></a>
+        <a class="button is-link is-warning" href="{% url 'cadmus:download_entry' slug=entry.slug %}"><img
+            src="{% static 'cadmus/print.png' %}" width="25"></a>
       </div>
+
+      {% if entry.tags.all %}
+      <p>Tags:
+        {% for tag in entry.tags.all %}
+        <a href="{% url 'cadmus:entries_by_tag' tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {% endfor %}
+      </p>
+      {% endif %}
 
       <div class="content">
         {{ entry.decrypted_content|safe|linebreaks }}
@@ -39,11 +49,13 @@
           <a class="button is-link is-light" href="{% url 'cadmus:delete' entry.slug %}" type="submit">Delete</a>
         </footer>
         <hr>
-        <span>{{ entry.initial_time|date:'D j' }} <a href="{{ entry.initial_time|date:'Y/m' }}">{{ entry.initial_time|date:'F,' }}</a></span>
+        <span>{{ entry.initial_time|date:'D j' }} <a href="{{ entry.initial_time|date:'Y/m' }}">{{
+            entry.initial_time|date:'F,' }}</a></span>
         <span><a href="{{ entry.initial_time|date:'Y' }}">{{ entry.initial_time|date:'Y' }}</a></span>
         <span>{{ entry.initial_time|date:'h:i a' }}
-        {% if entry.initial_time|date:'h:i a' != entry.last_modified|date:'h:i a' %}
-          <br><span class="last-modified">Last modified:</span> <span>{{ entry.last_modified|date:'D j ' }}{{ entry.last_modified|date:'F,' }}</span>
+          {% if entry.initial_time|date:'h:i a' != entry.last_modified|date:'h:i a' %}
+          <br><span class="last-modified">Last modified:</span> <span>{{ entry.last_modified|date:'D j ' }}{{
+            entry.last_modified|date:'F,' }}</span>
           <span>{{ entry.last_modified|date:'Y' }}</span>
           <span>{{ entry.last_modified|date:'| h:i a'}}</span>
           {% else %}

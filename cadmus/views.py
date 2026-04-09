@@ -152,6 +152,12 @@ def create_entry(request):
 				new_entry = entry_form.save(commit=False)
 				new_entry.creator = request.user
 				new_entry.save()
+				entry_form.save_m2m()
+
+				new_tags_str = entry_form.cleaned_data.get('new_tags', '')
+				for raw in [t.strip() for t in new_tags_str.split(',') if t.strip()]:
+					tag, created = Tag.objects.get_or_create(name=raw, creator=request.user)
+					new_entry.tags.add(tag)
 
 		return HttpResponseRedirect(reverse("cadmus:index"))
 
@@ -181,6 +187,13 @@ def edit_entry(request, slug):
 
 			if form.is_valid():
 				form.save()
+				form.save_m2m()
+
+				new_tags_str = form.cleaned_data.get('new_tags', '')
+				for raw in [t.strip() for t in new_tags_str.split(',') if t.strip()]:
+					tag, created = Tag.objects.get_or_create(name=raw, creator=request.user)
+					entry.tags.add(tag)
+
 				return HttpResponseRedirect(reverse("cadmus:entry", args=[slug]))
 
 			else:
@@ -198,6 +211,13 @@ def delete_entry(request, slug):
 		entry.delete()
 
 	return HttpResponseRedirect(reverse("cadmus:index"))
+
+def entries_by_tag(request, slug):
+    tag = Tag.objects.get(slug=slug, creator=request.user)
+    entries = tag.entries.filter(creator=request.user).order_by('-initial_time')
+    paginator = Paginator(entries, 5)
+    page_obj = paginator.get_page(request.GET.get('page'))
+    return render(request, "cadmus/index.html", {"page_obj": page_obj, "current_tag": tag})
 
 def archive_month(request):
 	return render(request, "cadmus/entry_archive_month.html")

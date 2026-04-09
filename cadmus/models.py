@@ -25,6 +25,7 @@ class Entry(models.Model):
 	initial_time = models.DateTimeField(default=timezone.now, blank=True, null=False, verbose_name="Initial Time")
 	last_modified = models.DateTimeField(auto_now=True, null=True, verbose_name="Last Modified")
 	creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+	tags = models.ManyToManyField('Tag', related_name='tags', blank=True)
 
 	class Meta:
 		indexes = [
@@ -59,3 +60,16 @@ class Entry(models.Model):
 			return plain.decode("utf-8")
 		except (InvalidToken, Exception):
 			return ""
+
+class Tag(models.Model):
+	name = models.CharField(max_length=50, unique=True, verbose_name="Tag Name")
+	creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
+
+	class Meta:
+		unique_together = ('creator', 'name')
+		indexes = [
+			models.Index(fields=['name']),
+		]
+
+	def __str__(self):
+		return self.name
