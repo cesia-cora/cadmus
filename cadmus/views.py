@@ -60,7 +60,7 @@ class SearchResultsView(ListView):
 @cache_page(60 * 5)
 def index(request):
 	# add [:number] to limit entries
-	entries = Entry.objects.filter(creator=request.user).select_related('creator').all().order_by('-initial_time')
+	entries = Entry.objects.select_related('creator').filter(creator=request.user.id).all().order_by('-initial_time')
 	paginator = Paginator(entries, 5)
 
 	page_number = request.GET.get('page')
@@ -168,7 +168,7 @@ def create_entry(request):
 
 def entry(request, slug):
 
-	entry = Entry.objects.select_related(creator=request.user).get(slug=slug)
+	entry = Entry.objects.select_related(creator=request.user.id).get(slug=slug)
 	entry.content = entry.decrypted_content
 
 	return render(request, "cadmus/entry.html", {
@@ -177,7 +177,7 @@ def entry(request, slug):
 
 def edit_entry(request, slug):
 
-	entry = Entry.objects.select_related(creator=request.user).get(slug=slug)
+	entry = Entry.objects.select_related(creator=request.user.id).get(slug=slug)
 	entry.content = entry.decrypted_content
 	form = EntryForm(instance=entry)
 
@@ -191,7 +191,7 @@ def edit_entry(request, slug):
 
 				new_tags_str = form.cleaned_data.get('new_tags', '')
 				for raw in [t.strip() for t in new_tags_str.split(',') if t.strip()]:
-					tag, created = Tag.objects.get_or_create(name=raw, creator=request.user)
+					tag, created = Tag.objects.get_or_create(name=raw, creator=request.user.id)
 					entry.tags.add(tag)
 
 				return HttpResponseRedirect(reverse("cadmus:entry", args=[slug]))
@@ -207,14 +207,14 @@ def edit_entry(request, slug):
 def delete_entry(request, slug):
 
 	with transaction.atomic():
-		entry = Entry.objects.select_for_update(creator=request.user).get(slug=slug)
+		entry = Entry.objects.select_for_update(creator=request.user.id).get(slug=slug)
 		entry.delete()
 
 	return HttpResponseRedirect(reverse("cadmus:index"))
 
 def entries_by_tag(request, slug):
-    tag = Tag.objects.get(slug=slug, creator=request.user)
-    entries = tag.entries.filter(creator=request.user).order_by('-initial_time')
+    tag = Tag.objects.get(slug=slug, creator=request.user.id)
+    entries = tag.entries.filter(creator=request.user.id).order_by('-initial_time')
     paginator = Paginator(entries, 5)
     page_obj = paginator.get_page(request.GET.get('page'))
     return render(request, "cadmus/index.html", {"page_obj": page_obj, "current_tag": tag})
@@ -305,17 +305,17 @@ def day_entries(request, year, month, day):
 
 def username_change(request):
     if request.method == "POST":
-        form = UsernameChangeForm(request.user, request.POST)
+        form = UsernameChangeForm(request.user.id, request.POST)
         
         if form.is_valid():
             try:
                 new_username = form.cleaned_data["username"]
-                change_username(request.user, new_username)
+                change_username(request.user.id, new_username)
                 return redirect("cadmus:index")
             except ValueError as e:
                 form.add_error('username', str(e))
     else:
-        form = UsernameChangeForm(request.user, initial={"username": request.user.username})
+        form = UsernameChangeForm(request.user.id, initial={"username": request.user.username})
     
     return render(request, "cadmus/registration/username_change.html", {
 		"form": form
@@ -324,18 +324,18 @@ def username_change(request):
 
 def password_reset(request):
     if request.method == "POST":
-        p_form = PasswordChangeForm(request.user, request.POST)
+        p_form = PasswordChangeForm(request.user.id, request.POST)
         
         if p_form.is_valid():
             try:
                 new_password = p_form.cleaned_data["new_password1"]
-                change_user_password(request.user, new_password)
+                change_user_password(request.user.id, new_password)
                 update_session_auth_hash(request, request.user)
                 return redirect("cadmus:index")
             except Exception as e:
                 p_form.add_error(None, str(e))
     else:
-        p_form = PasswordChangeForm(request.user)
+        p_form = PasswordChangeForm(request.user.id)
 
     return render(request, "cadmus/registration/password_reset_form.html", {
 		"form": p_form

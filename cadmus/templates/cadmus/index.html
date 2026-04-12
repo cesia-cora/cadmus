@@ -10,7 +10,7 @@
   <form action="{% url 'cadmus:index' %}" method="GET">
     <div class="cards">
       {% for entry in page_obj %}
-      {% if entry.creator == request.user %}
+      {% if entry.creator == request.user.id %}
       <div class="card card2">
         <div class="card-image"></div>
         <div class="card-content">
@@ -70,7 +70,7 @@
       <dl class="is-size-5">
         <br>
         <dt>&#8594; Completely free!</dt>
-        <dd>Users can access and use the website <span class="has-text-danger">without any cost</span>.</dd>
+        <dd>Users can access and use the app <span class="has-text-danger">without any cost</span>.</dd>
         <br>
         <dt>&#8594; Totally private entries</dt>
         <dd>All entries are kept <span class="has-text-danger">confidential and secure</span> from unauthorized access.
@@ -78,7 +78,7 @@
         <br>
         <dt>&#8594; Post, view, update and delete your entries</dt>
         <dd>Users have the ability to <span class="has-text-danger">create, read, update and delete</span> their
-          entries on the website.</dd>
+          entries on the app.</dd>
         <br>
         <img src="{% static 'cadmus/post_view.png' %}"
         <br>

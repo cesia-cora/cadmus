@@ -4,13 +4,13 @@
 ![Static Badge](https://img.shields.io/badge/cryptography-45.0.6-%23?labelColor=black&style=for-the-badge&color=%23756154)
 
 ## CADMUS | PERSONAL DIARY PROJECT
-Cadmus is a web application made to publish and view your entries, like a personal diary/journal.
+Cadmus is a desktop application (originally as a web app project) to post and view private entries, in the form of a personal diary/journal.
 
 This is a Django project using a layered architecture.
-<br>The Model handles the data persistence.
-<br>The Template handles the output format.
-<br>The View handles the logic of what data to display and calls the services.
-<br>The Service handles the business logic.
+- The Model handles the data persistence.
+- The Template handles the output format.
+- The View handles the logic of what data to display and calls the services.
+- The Service handles the business logic.
 
 ### Features:
 - User authentication and authorization system
@@ -24,6 +24,7 @@ This is a Django project using a layered architecture.
 - Cute 3D images from [Ouch!][def3]
 - Unit tests
 - Integration tests
+- pywebview for GUI
 
 ### Requirements:
 - Python 3.x
@@ -52,38 +53,43 @@ Type this command in the terminal
 
 <pre>py -m pip install -r requirements.txt</pre>
 
-4. Apply database models
+5. Apply database models
 
 <pre>py -m manage makemigrations</pre>
 
 <pre>py -m manage migrate</pre>
 
-5. Generate a random key on the terminal
+6. Generate a random key on the terminal
 
 <pre>python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"</pre>
 
-6. Create an .env file in the main folder with the following
+7. Create an .env file in the main folder with the following
 
 <pre>SECRET_KEY='paste your random secret key here'</pre>
 
-7. Generate an encryption key on the terminal
+8. Generate an encryption key on the terminal
 
 <pre>python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"</pre>
 
-8. On the .env file type
+9. On the .env file type
 
 <pre>ENCRYPTION_KEY='your encryption key'</pre>
 
-9. Create superuser (optional)
+10. Create superuser (optional)
 <pre>py -m manage createsuperuser</pre>
 
 Choose an username and a password. 
 
-10. Run the server
+11. Run the server
 
 <pre>py -m manage runserver</pre>
 
-11. Go to 127.0.0.1/admin to view your database interface.
+12. Go to 127.0.0.1/admin to view your database interface.
+
+### Run GUI window
+
+Inside the diary folder (along manage.py) type:
+<pre>python webview_app.py</pre>
 
 ### Run tests (optional):
 <pre>py -m manage test cadmus</pre>

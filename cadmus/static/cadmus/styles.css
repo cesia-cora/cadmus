@@ -360,6 +360,12 @@ footer {
 	border-color: #c5d1de;
 }
 
+@media screen and (max-width: 1023px) {
+	.navbar-menu {
+		background-color: transparent;
+	}
+}
+
 @media (prefers-color-scheme: dark) {
 
 	body {
