@@ -10,7 +10,7 @@
   <form action="{% url 'cadmus:index' %}" method="GET">
     <div class="cards">
       {% for entry in page_obj %}
-      {% if entry.creator == request.user.id %}
+      {% if entry.creator == request.user %}
       <div class="card card2">
         <div class="card-image"></div>
         <div class="card-content">

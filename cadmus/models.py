@@ -5,6 +5,7 @@ from django.utils import timezone
 from django_ckeditor_5.fields import CKEditor5Field
 from django.conf import settings
 from cryptography.fernet import Fernet, InvalidToken
+from concurrency.fields import IntegerVersionField
 
 # Local helper
 def _get_fernet():
@@ -26,6 +27,7 @@ class Entry(models.Model):
 	last_modified = models.DateTimeField(auto_now=True, null=True, verbose_name="Last Modified")
 	creator = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 	tags = models.ManyToManyField('Tag', related_name='tags', blank=True)
+	version = IntegerVersionField(default=1, verbose_name="Version")
 
 	class Meta:
 		indexes = [

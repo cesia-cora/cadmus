@@ -25,6 +25,7 @@ ENCRYPTION_KEY = config('ENCRYPTION_KEY')
 INSTALLED_APPS = [
     'cadmus',
     'django_ckeditor_5',
+    'concurrency',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',

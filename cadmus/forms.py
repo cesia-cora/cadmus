@@ -1,11 +1,12 @@
 from django import forms
 from django.forms import ModelForm
+from concurrency.forms import ConcurrentForm
 from .models import *
 from django.contrib.auth import get_user_model
 from django.contrib.auth.password_validation import validate_password
 from django_ckeditor_5.widgets import CKEditor5Widget
 
-class EntryForm(ModelForm):
+class EntryForm(ConcurrentForm):
 	tags = forms.ModelMultipleChoiceField(
         queryset=Tag.objects.none(),
         required=False,

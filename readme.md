@@ -13,18 +13,22 @@ This is a Django project using a layered architecture.
 - The Service handles the business logic.
 
 ### Features:
-- User authentication and authorization system
 - Post, view, edit and delete entries
-- Encrypted entries using a 128-bit symmetric key
 - Calendar integration
 - Filter entries by date
 - Rich text formatting
 - Search bar
 - Convert to and download entries as PDF
 - Cute 3D images from [Ouch!][def3]
+
+### Functionalities:
+- User authentication and authorization system
+- Encrypted entries using a 128-bit symmetric key
 - Unit tests
 - Integration tests
 - pywebview for GUI
+- Atomic transactions
+- Pessimistic and optimistic locking
 
 ### Requirements:
 - Python 3.x
