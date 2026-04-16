@@ -3,6 +3,8 @@
 {% load custom_filters %}
 
 {% block body %}
+  <a class="button is-danger is-light" style="margin-left:2%;margin-top:1%;" href="{% url 'cadmus:index' %}">&#8592 Back to home</a>
+
 <div class="container container_calendar" style="min-height: 100vh;">
     <h1 class="title is-3 has-text-centered">{{ month_date|date:"F Y" }}</h1>
     
