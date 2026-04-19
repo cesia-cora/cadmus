@@ -1,7 +1,7 @@
-from tabnanny import verbose
 from django.db import models
 from django.contrib.auth.models import AbstractUser
 from django.utils import timezone
+from django.utils.crypto import get_random_string
 from django_ckeditor_5.fields import CKEditor5Field
 from django.conf import settings
 from cryptography.fernet import Fernet, InvalidToken
@@ -17,7 +17,27 @@ def _get_fernet():
 	return Fernet(key)
 
 class User(AbstractUser):
-	pass
+	recovery_code_encrypted = models.BinaryField(null=True, blank=True)
+
+	def generate_recovery_code(self):
+		raw_code = get_random_string(length=12, allowed_chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789')
+		f = _get_fernet()
+        
+		self.recovery_code_encrypted = f.encrypt(raw_code.encode("utf-8"))
+		self.save()
+        
+		return raw_code
+
+	def check_recovery_code(self, raw_code):
+		if not self.recovery_code_encrypted:
+			return False
+		f = _get_fernet()
+		
+		try:
+			decrypted_code = f.decrypt(self.recovery_code_encrypted).decode("utf-8")
+			return decrypted_code == raw_code
+		except (InvalidToken, Exception):
+			return False
 
 class Entry(models.Model):
 	title = models.CharField(blank=False, max_length=200, verbose_name="Title")

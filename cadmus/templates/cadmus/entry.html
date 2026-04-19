@@ -36,7 +36,7 @@
       {% if entry.tags.all %}
       <p>Tags:
         {% for tag in entry.tags.all %}
-        <a href="{% url 'cadmus:entries_by_tag' tag.slug %}">{{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
+        {{ tag.name }}</a>{% if not forloop.last %}, {% endif %}
         {% endfor %}
       </p>
       {% endif %}

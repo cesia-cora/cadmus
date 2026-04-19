@@ -8,3 +8,4 @@ diary/__pycache__
 cadmus/tests/__pycache__
 db.sqlite3
 Syncthing/diary_sync/*
+cadmus/management

@@ -29,6 +29,7 @@ This is a Django project using a layered architecture.
 - pywebview for GUI
 - Atomic transactions
 - Pessimistic and optimistic locking
+- Password recovery
 
 ### Requirements:
 - Python 3.x
@@ -63,32 +64,16 @@ Type this command in the terminal
 
 <pre>py -m manage migrate</pre>
 
-6. Generate a random key on the terminal
-
-<pre>python -c "from django.core.management.utils import get_random_secret_key; print(get_random_secret_key())"</pre>
-
-7. Create an .env file in the main folder with the following
-
-<pre>SECRET_KEY='paste your random secret key here'</pre>
-
-8. Generate an encryption key on the terminal
-
-<pre>python -c "from cryptography.fernet import Fernet; print(Fernet.generate_key().decode())"</pre>
-
-9. On the .env file type
-
-<pre>ENCRYPTION_KEY='your encryption key'</pre>
-
-10. Create superuser (optional)
+6. Create superuser (optional)
 <pre>py -m manage createsuperuser</pre>
 
 Choose an username and a password. 
 
-11. Run the server
+7. Run the server
 
 <pre>py -m manage runserver</pre>
 
-12. Go to 127.0.0.1/admin to view your database interface.
+8. Go to 127.0.0.1/admin to view your database interface.
 
 ### Run GUI window
 

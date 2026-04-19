@@ -19,7 +19,8 @@ Log in | Cadmus - Personal Diary
   </article>
   {% endif %}
 
-  <a class="button is-danger is-light" style="margin-left:2%;margin-top:1%;" href="{% url 'cadmus:index' %}">&#8592 Back to home</a>
+  <a class="button is-danger is-light" style="margin-left:2%;margin-top:1%;" href="{% url 'cadmus:index' %}">&#8592 Back
+    to home</a>
 
   <div class="has-text-centered is-size-2" style="margin-top:10%">LOG IN</div>
 
@@ -35,7 +36,17 @@ Log in | Cadmus - Personal Diary
     </form>
     <img src="{% static 'cadmus/casual-life-3d-girl-with-coffee.png' %}" width="300">
   </div>
-  <br><div class="has-text-centered">Forgot your password? <a href="">Reset your password</a></div>
-  <br><div class="has-text-centered">Don't have an account yet? <a href="{% url 'cadmus:register' %}">Register</a></div>
+  {% if messages %}
+  {% for message in messages %}
+  <div class="notification is-warning is-light">
+    <button class="delete"></button>
+    <strong>ATENTION:</strong> {{ message }}
+  </div>
+  {% endfor %}
+  {% endif %}
+  <br>
+  <div class="has-text-centered">Forgot your password? <a href="">Reset your password</a></div>
+  <br>
+  <div class="has-text-centered">Don't have an account yet? <a href="{% url 'cadmus:register' %}">Register</a></div>
 </div>
 {% endblock %}

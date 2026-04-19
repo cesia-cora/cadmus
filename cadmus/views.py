@@ -5,7 +5,7 @@ from django.views.generic import ListView
 from django.db.models import Q
 from concurrency.exceptions import RecordModifiedError
 from django.contrib import messages
-from django.contrib.auth import authenticate, login, logout, update_session_auth_hash
+from django.contrib.auth import authenticate, login, logout
 from django.urls import reverse
 from django.db import IntegrityError, transaction
 from django.core.paginator import Paginator
@@ -18,17 +18,24 @@ from .forms import *
 from .services import *
 
 class EntryMonthArchiveView(MonthArchiveView):
-    queryset = Entry.objects.select_related('creator').all()
-    date_field = "initial_time"
-    make_object_list = True
-    allow_future = True
+	model = Entry
+
+	def get_queryset(self):
+		queryset = Entry.objects.select_related('creator').filter(creator=self.request.user).all()
+		return queryset
+	date_field = "initial_time"
+	make_object_list = True
+	allow_future = True
 
 class EntryYearArchiveView(YearArchiveView):
-    queryset = Entry.objects.select_related('creator').all()
-    date_field = "initial_time"
-    make_object_list = True
-    allow_future = True
-    
+	model = Entry
+	def get_queryset(self):
+		queryset = Entry.objects.select_related('creator').filter(creator=self.request.user).all()
+		return queryset
+	date_field = "initial_time"
+	make_object_list = True
+	allow_future = True
+
 class SearchResultsView(ListView):
 	model = Entry
 	template_name = 'cadmus/search_results.html'
@@ -72,9 +79,6 @@ def index(request):
 		"page_obj": page_obj
 	})
 
-def settings(request):
-	return render(request, "cadmus/settings.html")
-
 def login_view(request):
 	if request.method == "POST":
 
@@ -114,8 +118,14 @@ def register(request):
 
 		try:
 			with transaction.atomic():
-				user = User.objects.create_user(username, email, password)  # type: ignore
+				user = User.objects.create_user(username, email, password)
+				user.generate_recovery_code()
 				user.save()
+				messages.success(
+					request, 
+					f"Successful registration! IMPORTANT: Your recovery key is: {user.recovery_code}. "
+					"Keep it in a safe place, you will need it in case you forget your password." \
+				)
 				login(request, user)
 
 		except IntegrityError:
@@ -127,6 +137,9 @@ def register(request):
 
 	else:
 		return render(request, "cadmus/register.html")
+
+def settings(request):
+	return render(request, "cadmus/settings.html")
 
 def create_entry(request):
 
@@ -205,26 +218,26 @@ def delete_entry(request, slug):
 	return HttpResponseRedirect(reverse("cadmus:index"))
 
 def entries_by_tag(request, slug):
-    tag = Tag.objects.get(slug=slug, creator=request.user)
-    entries = tag.entries.filter(creator=request.user).order_by('-initial_time')
-    paginator = Paginator(entries, 5)
-    page_obj = paginator.get_page(request.GET.get('page'))
-    return render(request, "cadmus/index.html", {"page_obj": page_obj, "current_tag": tag})
+	tag = Tag.objects.get(slug=slug, creator=request.user)
+	entries = tag.entries.filter(creator=request.user).order_by('-initial_time')
+	paginator = Paginator(entries, 5)
+	page_obj = paginator.get_page(request.GET.get('page'))
+	return render(request, "cadmus/index.html", {"page_obj": page_obj, "current_tag": tag})
 
 def archive_month(request):
 	return render(request, "cadmus/entry_archive_month.html")
 
 def download_entry(request, slug):
-    entry = Entry.objects.select_related('creator').get(slug=slug, creator=request.user)
+	entry = Entry.objects.select_related('creator').get(slug=slug, creator=request.user)
 
-    pdf_buffer = generate_entry_pdf(entry)
+	pdf_buffer = generate_entry_pdf(entry)
 
-    response = HttpResponse(content_type='application/pdf')
-    response['Content-Disposition'] = f'attachment; filename=\"{entry.slug}.pdf\"'
-    response.write(pdf_buffer.getvalue())
-    pdf_buffer.close()
+	response = HttpResponse(content_type='application/pdf')
+	response['Content-Disposition'] = f'attachment; filename=\"{entry.slug}.pdf\"'
+	response.write(pdf_buffer.getvalue())
+	pdf_buffer.close()
 
-    return response
+	return response
 
 def calendar(request):
 	today = date.today()
@@ -247,7 +260,7 @@ def calendar(request):
 	start_date = date(year, month, 1)
 	end_date = start_date + timedelta(days=31)
 	end_date = end_date.replace(day=1) - timedelta(days=1)
-	entries = Entry.objects.filter(initial_time__date__range=[start_date, end_date]).select_related(creator=request.user).only('id', 'initial_time', 'slug', 'title')
+	entries = Entry.objects.filter(initial_time__date__range=[start_date, end_date]).select_related('creator').only('id', 'initial_time', 'slug', 'title', 'creator')
 
 	entry_dates = {}
 
@@ -295,39 +308,44 @@ def day_entries(request, year, month, day):
 
 
 def username_change(request):
-    if request.method == "POST":
-        form = UsernameChangeForm(request.user, request.POST)
-        
-        if form.is_valid():
-            try:
-                new_username = form.cleaned_data["username"]
-                change_username(request.user, new_username)
-                return redirect("cadmus:index")
-            except ValueError as e:
-                form.add_error('username', str(e))
-    else:
-        form = UsernameChangeForm(request.user, initial={"username": request.user.username})
-    
-    return render(request, "cadmus/registration/username_change.html", {
+	if request.method == "POST":
+		form = UsernameChangeForm(request.user, request.POST)
+		
+		if form.is_valid():
+			try:
+				new_username = form.cleaned_data["username"]
+				change_username(request.user, new_username)
+				return redirect("cadmus:index")
+			except ValueError as e:
+				form.add_error('username', str(e))
+	else:
+		form = UsernameChangeForm(request.user, initial={"username": request.user.username})
+	
+	return render(request, "cadmus/registration/username_change.html", {
 		"form": form
 		})
 
 
-def password_reset(request):
-    if request.method == "POST":
-        p_form = PasswordChangeForm(request.user, request.POST)
-        
-        if p_form.is_valid():
-            try:
-                new_password = p_form.cleaned_data["new_password1"]
-                change_user_password(request.user, new_password)
-                update_session_auth_hash(request, request.user)
-                return redirect("cadmus:index")
-            except Exception as e:
-                p_form.add_error(None, str(e))
-    else:
-        p_form = PasswordChangeForm(request.user)
+def password_recover(request):
+	if request.method == 'POST':
+		form = PasswordRecoveryForm(request.POST)
+		if form.is_valid():
+			identifier = form.cleaned_data['identifier']
+			code = form.cleaned_data['recovery_code']
+			new_pass = form.cleaned_data['new_password1']
 
-    return render(request, "cadmus/registration/password_reset_form.html", {
-		"form": p_form
+			user = User.objects.filter(Q(username=identifier) | Q(email=identifier)).first()
+
+			if user and user.check_recovery_code(code):
+				user.set_password(new_pass)
+				user.save()
+				messages.success(request, "Successful password recover.")
+				return redirect('login')
+			else:
+				messages.error(request, "The master key or email/username are incorrect.")
+	else:
+		form = PasswordRecoveryForm()
+
+	return render(request, 'password_reset_form.html', {
+		'form': form
 		})

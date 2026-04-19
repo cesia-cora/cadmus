@@ -17,4 +17,4 @@ if __name__ == '__main__':
     t = threading.Thread(target=start_server, daemon=True)
     t.start()
     webview.create_window('Cadmus | Personal Diary', 'http://127.0.0.1:8000', width=1024, height=768)
-    webview.start()
+    webview.start(icon='diary/cadmus/static/cadmus/icon.ico')

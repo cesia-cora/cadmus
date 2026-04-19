@@ -1,5 +1,4 @@
 from django import forms
-from django.forms import ModelForm
 from concurrency.forms import ConcurrentForm
 from .models import *
 from django.contrib.auth import get_user_model
@@ -8,10 +7,10 @@ from django_ckeditor_5.widgets import CKEditor5Widget
 
 class EntryForm(ConcurrentForm):
 	tags = forms.ModelMultipleChoiceField(
-        queryset=Tag.objects.none(),
-        required=False,
-        widget=forms.SelectMultiple(attrs={'class': 'select is-multiple'})
-    )
+		queryset=Tag.objects.none(),
+		required=False,
+		widget=forms.SelectMultiple(attrs={'class': 'select is-multiple'})
+	)
 	new_tags = forms.CharField(required=False, help_text='Comma-separated new tags', widget=forms.TextInput(attrs={'placeholder': 'tag1, tag2'}))
 
 	class Meta:
@@ -64,48 +63,31 @@ def clean_username(self):
 		
 	return username
 
-class PasswordChangeForm(forms.Form):
-	def __init__(self, user, *args, **kwargs):
-		super().__init__(*args, **kwargs)
-		self.user = user
-		self.fields['current_password'].widget = forms.PasswordInput(
-			attrs={'placeholder': 'Current password', 
-			'class': 'input is-normal'})
-		self.fields['new_password1'].widget = forms.PasswordInput(
-			attrs={'placeholder': 'New password',
-			'class': 'input is-normal'})
-		self.fields['new_password2'].widget = forms.PasswordInput(
-			attrs={'placeholder': 'Confirm new password',
-			'class': 'input is-normal'})
-
-	current_password = forms.CharField(
-		label=('Current password'), 
-		error_messages={'required': ''},
-		widget=forms.PasswordInput,
-		)
+class PasswordRecoveryForm(forms.Form):
+	identifier = forms.CharField(
+		label="Email or username",
+		widget=forms.TextInput(attrs={'placeholder': 'Email or username', 'class': 'input is-normal'})
+	)
+	recovery_code = forms.CharField(
+		label="Master Key",
+		widget=forms.TextInput(attrs={'placeholder': 'Your 12-character code', 'class': 'input is-normal'})
+	)
 	new_password1 = forms.CharField(
-		label=("New password"), 
-		error_messages={'required': ''},
-		widget=forms.PasswordInput,
-		)
+		label="New Password",
+		widget=forms.PasswordInput(attrs={'placeholder': 'New password', 'class': 'input is-normal'})
+	)
 	new_password2 = forms.CharField(
-		label=("Confirm new password"), 
-		error_messages={'required': ''},
-		widget=forms.PasswordInput,
-		)
+		label="Confirm New Password",
+		widget=forms.PasswordInput(attrs={'placeholder': 'Confirm new password', 'class': 'input is-normal'})
+	)
 
-	def clean_current_password(self):
-		cp = self.cleaned_data.get("current_password")
-		if not self.user.check_password(cp):
-			raise forms.ValidationError(_("Current password is incorrect."))
-		return cp
+	def clean(self):
+		cleaned_data = super().clean()
+		p1 = cleaned_data.get("new_password1")
+		p2 = cleaned_data.get("new_password2")
 
-	def clean_password(self):
-		cleaned = super().clean()
-		p1 = cleaned.get("new_password1")
-		p2 = cleaned.get("new_password2")
-		if p1 and p2 and p1 != p2:
-			raise forms.ValidationError(_("The two new password fields didn't match."))
+		if p1 != p2:
+			raise forms.ValidationError("The new passwords do not match.")
 		if p1:
-			validate_password(p1, self.user)
-		return cleaned
+			validate_password(p1)
+		return cleaned_data

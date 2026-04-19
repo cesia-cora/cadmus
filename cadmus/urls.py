@@ -24,10 +24,7 @@ urlpatterns = [
     path('entries/<int:year>/<int:month>/<int:day>/', views.day_entries, name="day_entries"),
     path('settings/', views.settings, name="settings"),
     path('username_change/', views.username_change, name='username_change'),
-    path('password_reset/', views.password_reset, name='password_reset'),
-    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='registration/password_reset_done.html'), name='password_reset_done'),
-    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='registration/password_reset_confirm.html'), name='password_reset_confirm'),
-    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='registration/password_reset_complete.html'), name='password_reset_complete'),
+    path('password_recover/', views.password_recover, name='password_recover'),
 ]
 
 # make all static image files available for all templates
