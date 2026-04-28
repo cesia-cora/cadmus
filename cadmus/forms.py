@@ -15,11 +15,12 @@ class EntryForm(ConcurrentForm):
 
 	class Meta:
 		model = Entry
-		fields = ['title', 'slug', 'content', 'initial_time', 'tags']
+		fields = ['title', 'slug', 'content', 'initial_time', 'tags', 'version']
 		widgets = {'title': forms.TextInput(attrs={'placeholder': 'Type your title here', 'class': 'input self-input-post', 'type': 'text'}),
 		'slug': forms.TextInput(attrs={'placeholder': 'Type something like "this-is-my-entry"', 'class': 'input self-input-post',}),
 		'content': CKEditor5Widget(attrs={'placeholder': 'Type your entry here', 'class': 'django_ckeditor_5'}, config_name='extends'),
 		'initial_time': forms.DateTimeInput(attrs={'class': 'input self-input-post', 'type': 'datetime-local'}),
+		'version': forms.HiddenInput()
 		}
 
 	def __init__(self, *args, **kwargs):

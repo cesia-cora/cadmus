@@ -11,7 +11,7 @@ class EntryAdminForm(forms.ModelForm):
 class EntryAdmin(ConcurrentModelAdmin):
     form = EntryAdminForm
     list_display = ('title', 'creator', 'initial_time')
-    readonly_fields = ('title', 'slug', 'creator', 'content', 'initial_time')
+    readonly_fields = ('title', 'slug', 'creator', 'content', 'initial_time', 'last_modified', 'version')
 
 class TagAdmin(admin.ModelAdmin):
     list_display = ('name', 'creator')
