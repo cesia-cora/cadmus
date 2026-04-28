@@ -27,12 +27,30 @@
     <p class=" is-size-6">Maximum length of 200 characters. This will be your entry URL.</p>
     {{ edit_form.slug }}
     <hr>
+    <div>{{ edit_form.tags }}</div>
     <label class="label is-size-5">Content:</label>
     <p class="is-size-6">No length limits.</p>
     {{ edit_form.content }}
     <div style="margin-left:30%;">{{ edit_form.media }}</div>
+    <div>{{ edit_form.version }}</div>
     <input type="submit" class="button is-warning" value="Update entry">
 </form>
+
+{% if messages %}
+{% for message in messages %}
+{% if message.level_tag == 'error' %}
+<article class="message is-warning">
+    <div class="message-header">
+      <p>Warning</p>
+      <button class="delete" onclick="closeBtn()" aria-label="delete"></button>
+    </div>
+    <div class="message-body">
+      {{ message }}
+    </div>
+  </article>
+{% endif %}
+{% endfor %}
+{% endif %}
 </div>
 
 {% else %}

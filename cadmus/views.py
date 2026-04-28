@@ -185,28 +185,28 @@ def edit_entry(request, slug):
 	if request.method == "POST":
 		try:
 			with transaction.atomic():
-				form = EntryForm(request.POST, instance=entry)
+				form = EntryForm(request.POST, instance=entry, user=request.user)
 
 				if form.is_valid():
 					form.save()
-					form.save_m2m()
+					form._save_m2m()
 
 					new_tags_str = form.cleaned_data.get('new_tags', '')
 					for raw in [t.strip() for t in new_tags_str.split(',') if t.strip()]:
-						tag, created = Tag.objects.get_or_create(name=raw, creator=request.user.id)
+						tag, created = Tag.objects.get_or_create(name=raw, creator=request.user)
 						entry.tags.add(tag)
 
 					messages.success(request, "Entry updated successfully.")
 					return HttpResponseRedirect(reverse("cadmus:entry", args=[slug]))
 
 				else:
-					print(form.errors)
+					messages.error(request, "All fields must be completed.")
 		except RecordModifiedError:
 			messages.error(request, "This entry was modified by another session. Please reload and try again.")
 
 	return render(request, "cadmus/update_entry.html", {
 		"entry": entry,
-		"edit_form": form
+		"edit_form": form,
 	})
 
 def delete_entry(request, slug):
